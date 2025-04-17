@@ -20,7 +20,7 @@ namespace _Project.SaveSystem
         }
         #endif
 
-        private void Start()
+        private void Awake()
         {
             ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
         }

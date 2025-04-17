@@ -6,7 +6,7 @@ namespace _Project.SaveSystem
 {   
     public class SaveManager : MonoBehaviour
     {
-        private List<Saveable> _saveables = new ();
+        private List<Saveable> _saveables = new();
         
         private void Awake()
         {
@@ -23,7 +23,7 @@ namespace _Project.SaveSystem
             SaveGame();
         }
 
-        public void SaveGame()
+        private void SaveGame()
         {
             print("Saving!");
             
@@ -32,7 +32,7 @@ namespace _Project.SaveSystem
                 var saveDatas = saveable.GetSaveData();
                 foreach (var data in saveDatas)
                 {
-                    print(data.GetData());
+                    print(data);
                 }
             }
         }
