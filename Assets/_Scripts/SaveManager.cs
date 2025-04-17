@@ -1,5 +1,9 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using _Project.SaveSystem.Events;
+using _Project.SaveSystem.Interfaces;
+using Newtonsoft.Json;
 using ringo.EventSystem;
 using ringo.ServiceLocator;
 using UnityEngine;
@@ -8,6 +12,8 @@ namespace _Project.SaveSystem
 {   
     public class SaveManager : MonoBehaviour
     {
+        const string SaveFileName = "save.json";
+        
         private NoArgumentEventHandler<SaveGameRequest> _saveGameRequestHandler;
         
         private List<Saveable> _saveables = new();
@@ -35,18 +41,48 @@ namespace _Project.SaveSystem
 
         private void SaveGame()
         {
-            print("Saving!");
+            StringBuilder jsonStringBuilder = new StringBuilder();
             
             foreach (var saveable in _saveables)
             {
                 var saveDatas = saveable.GetSaveData();
-                foreach (var data in saveDatas)
+
+                JSONContainer container = new JSONContainer
                 {
-                    print(data);
-                }
+                    GUID = saveable.GUID,
+                    Data = saveDatas
+                };
+                
+                string jsonString = JsonConvert.SerializeObject(container, Formatting.Indented);
+                jsonStringBuilder.Append(jsonString);
             }
+            
+            SaveToFile(jsonStringBuilder.ToString());
             
             EventBus.Publish(new SaveGameResponse());
         }
+
+        private void SaveToFile(string text)
+        {
+            File.WriteAllText(GetPathString(), text);
+        }
+        
+        private static string GetPathString()
+        {
+            return Application.persistentDataPath + "/" + SaveFileName;
+        }
+    }
+}
+
+[System.Serializable]
+public struct JSONContainer
+{
+    public string GUID;
+    public List<SaveData> Data;
+
+    public JSONContainer(string guid, List<SaveData> data)
+    {
+        GUID = guid;
+        Data = data;
     }
 }

@@ -618,9 +618,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   testSaveData:
-    x: 14
-    y: 12
-    z: 20
+    X: 10
+    Y: 20
+    Z: 30
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

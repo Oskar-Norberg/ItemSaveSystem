@@ -6,11 +6,14 @@ using UnityEngine;
 
 namespace _Project.SaveSystem
 {
+    [Serializable]
     public class Saveable : MonoBehaviour
     {
+        public string GUID => guid.GuidString;
+        
         [SerializeField, HideInInspector] private SerializableGuid guid;
         
-        private List<ISaveData> _saveData = new();
+        private List<SaveData> _saveData = new();
         
         #if UNITY_EDITOR
         private void OnValidate()
@@ -25,12 +28,12 @@ namespace _Project.SaveSystem
             ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
         }
 
-        public List<ISaveData> GetSaveData()
+        public List<SaveData> GetSaveData()
         {
             return _saveData;
         }
         
-        public void BindSaveData(ISaveData saveData)
+        public void BindSaveData(SaveData saveData)
         {
             if (saveData == null) 
                 return;
