@@ -54,12 +54,14 @@ namespace _Project.SaveSystem
             }
             
             JsonSerializer jsonSerializer = new JsonSerializer();
-            jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
-            
             StreamReader streamReader = new StreamReader(GetPathString());
-                
             JsonReader reader = new JsonTextReader(streamReader);
+            
+            jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
+                
             HeadJSONContainer headJSONContainer = jsonSerializer.Deserialize<HeadJSONContainer>(reader);
+            
+            reader.Close();
             streamReader.Close();
             
             LoadedData = new LoadedData(headJSONContainer);
@@ -86,15 +88,16 @@ namespace _Project.SaveSystem
             }
             
             JsonSerializer jsonSerializer = new JsonSerializer();
-            jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
-            
             StreamWriter streamWriter = new StreamWriter(GetPathString());
-            
             JsonWriter writer = new JsonTextWriter(streamWriter);
+
+            jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
             writer.Formatting = Formatting.Indented;
             
             jsonSerializer.Serialize(writer, headJSONContainer);
             writer.Flush();
+            
+            writer.Close();
             streamWriter.Close();
             
             EventBus.Publish(new SaveGameResponse());
