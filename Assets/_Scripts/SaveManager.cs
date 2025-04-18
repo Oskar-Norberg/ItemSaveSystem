@@ -28,11 +28,13 @@ namespace _Project.SaveSystem
         private void OnEnable()
         {
             _saveGameRequestHandler.Activate();
+            _loadGameRequestHandler.Activate();
         }
 
         private void OnDisable()
         {
             _saveGameRequestHandler.Deactivate();
+            _loadGameRequestHandler.Deactivate();
         }
 
         public void BindSaveable(Saveable saveable)
@@ -41,6 +43,18 @@ namespace _Project.SaveSystem
         }
 
         private void LoadGame()
+        {
+            if (!File.Exists(GetPathString()))
+            {
+                Debug.LogWarning("Save file does not exist.");
+                return;
+            }
+            
+            string json = File.ReadAllText(GetPathString());
+            
+            HeadJSONContainer headJSONContainer = JsonConvert.DeserializeObject<HeadJSONContainer>(json);
+            
+            print("test");
         }
 
         private void SaveGame()
