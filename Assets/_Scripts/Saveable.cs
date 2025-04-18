@@ -19,7 +19,13 @@ namespace _Project.SaveSystem
         // String is type name.
         private Dictionary<string, SaveData> _saveData = new();
         
-        
+        private void Awake()
+        {
+            if (!guid)
+                guid = new SerializableGuid();
+            
+            ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
+        }
         
         #if UNITY_EDITOR
         private void OnValidate()
@@ -55,11 +61,6 @@ namespace _Project.SaveSystem
             return false;
         }
         #endif
-
-        private void Awake()
-        {
-            ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
-        }
 
         public Dictionary<string, SaveData> GetSaveData()
         {

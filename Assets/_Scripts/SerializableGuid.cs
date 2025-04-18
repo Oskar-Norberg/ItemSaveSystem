@@ -14,6 +14,11 @@ namespace _Project.SaveSystem
 
         public static implicit operator bool(SerializableGuid serializableGuid)
         {
+            if (serializableGuid == null)
+            {
+                return false;
+            }
+            
             return !string.IsNullOrEmpty(serializableGuid.GuidString);
         }
     }

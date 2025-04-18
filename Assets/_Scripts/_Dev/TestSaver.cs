@@ -9,7 +9,7 @@ namespace _Project.SaveSystem._Dev
         [SerializeField] private TestSaveData testSaveData;
         [SerializeField] private TestSaveData2 testSaveData2;
         
-        private void Awake()
+        private void Start()
         {
             GetComponent<Saveable>().BindSaveData(testSaveData);
             GetComponent<Saveable>().BindSaveData(testSaveData2);
