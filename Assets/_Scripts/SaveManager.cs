@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using _Project.SaveSystem;
 using _Project.SaveSystem.Events;
-using _Project.SaveSystem.Interfaces;
 using Newtonsoft.Json;
 using ringo.EventSystem;
 using ringo.ServiceLocator;
@@ -67,6 +65,8 @@ namespace _Project.SaveSystem
 
         private void SaveToFile(string text)
         {
+            // Currently just overriding the file.
+            // Should probably only override changes.
             File.WriteAllText(GetPathString(), text);
         }
         
