@@ -53,13 +53,18 @@ namespace _Project.SaveSystem
                 return;
             }
             
-            string json = File.ReadAllText(GetPathString());
+            JsonSerializer jsonSerializer = new JsonSerializer();
+            jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
             
-            HeadJSONContainer headJSONContainer = JsonConvert.DeserializeObject<HeadJSONContainer>(json);
+            StreamReader streamReader = new StreamReader(GetPathString());
+                
+            JsonReader reader = new JsonTextReader(streamReader);
+            HeadJSONContainer headJSONContainer = jsonSerializer.Deserialize<HeadJSONContainer>(reader);
+            streamReader.Close();
             
             LoadedData = new LoadedData(headJSONContainer);
             
-            EventBus.Publish(new LoadGameResponse());
+            EventBus.Publish(new LoadGameResponse(LoadedData));
         }
 
         private void SaveGame()
@@ -80,7 +85,18 @@ namespace _Project.SaveSystem
                 headJSONContainer.AddSubContainer(container);
             }
             
-            SaveToFile(JsonConvert.SerializeObject(headJSONContainer, Formatting.Indented));
+            JsonSerializer jsonSerializer = new JsonSerializer();
+            jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
+            
+            StreamWriter streamWriter = new StreamWriter(GetPathString());
+            
+            JsonWriter writer = new JsonTextWriter(streamWriter);
+            writer.Formatting = Formatting.Indented;
+            
+            jsonSerializer.Serialize(writer, headJSONContainer);
+            writer.Flush();
+            streamWriter.Close();
+            
             EventBus.Publish(new SaveGameResponse());
         }
 
@@ -98,9 +114,11 @@ namespace _Project.SaveSystem
     }
 }
 
+// TODO: theres a lot of voodoo going on with the dataTypeName, should really be passed around as a type instead.
 public class LoadedData
 {
-    private Dictionary<SaveableType, Dictionary<string, SubJSONContainer>> _saveablesByType = new();
+    // TODO: Implement a way to get saveables by type.
+    // private Dictionary<SaveableType, Dictionary<string, SubJSONContainer>> _saveablesByType = new();
     
     // String is the GUID of the saveable.
     private Dictionary<string, SubJSONContainer> _saveDatas = new();
@@ -113,21 +131,38 @@ public class LoadedData
             _saveDatas[subContainer.GUID] = subContainer;
         }
 
-        // Group subcontainers by SaveableType.
-        foreach (SaveableType type in Enum.GetValues(typeof(SaveableType)))
+        // // Group subcontainers by SaveableType.
+        // foreach (SaveableType type in Enum.GetValues(typeof(SaveableType)))
+        // {
+        //     var subContainers = new Dictionary<string, SubJSONContainer>();
+        //
+        //     foreach (var saveData in _saveDatas)
+        //     {
+        //         if (saveData.Value.SaveableType == type)
+        //         {
+        //             subContainers[saveData.Key] = saveData.Value;
+        //         }
+        //     }
+        //
+        //     _saveablesByType[type] = subContainers;
+        // }
+    }
+
+    public T GetSaveData<T>(SaveableType type, string guid) where T : SaveData
+    {
+        if (_saveDatas.TryGetValue(guid, out var saveData))
         {
-            var subContainers = new Dictionary<string, SubJSONContainer>();
-
-            foreach (var saveData in _saveDatas)
+            // TODO O(n). This should be a dictionary. Will most likely be called quite frequently.
+            foreach (var data in saveData.Data)
             {
-                if (saveData.Value.SaveableType == type)
-                {
-                    subContainers[saveData.Key] = saveData.Value;
-                }
+                string typeName = typeof(T).Name;
+                if (data.Key == typeName)
+                    return data.Value as T;
             }
-
-            _saveablesByType[type] = subContainers;
         }
+
+        Debug.LogWarning("No save data found for GUID: " + guid + ", type: " + type + ", data type: " + typeof(T).Name);
+        return null;
     }
 }
 
