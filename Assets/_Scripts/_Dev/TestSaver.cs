@@ -1,50 +1,33 @@
 using System;
-using _Project.SaveSystem.Events;
-using ringo.EventSystem;
+using _Project.SaveSystem.Interfaces;
 using UnityEngine;
 
 namespace _Project.SaveSystem._Dev
 {
     [RequireComponent(typeof(Saveable))]
-    public class TestSaver : MonoBehaviour
+    public class TestSaver : MonoBehaviour, IBindable<TestSaveData>, IBindable<TestSaveData2>
     {
         [SerializeField] private TestSaveData testSaveData;
         [SerializeField] private TestSaveData2 testSaveData2;
         
-        private ArgumentEventHandler<LoadGameResponse> _loadGameResponseHandler;
-
-        private void Awake()
+        TestSaveData IBindable<TestSaveData>.GetSaveData()
         {
-            _loadGameResponseHandler = new ArgumentEventHandler<LoadGameResponse>(Load);
+            return testSaveData;
         }
         
-        private void Start()
+        TestSaveData2 IBindable<TestSaveData2>.GetSaveData()
         {
-            GetComponent<Saveable>().BindSaveData(testSaveData);
-            GetComponent<Saveable>().BindSaveData(testSaveData2);
+            return testSaveData2;
+        }
+        
+        public void LoadSaveData(TestSaveData saveData)
+        {
+            testSaveData = saveData;
         }
 
-        private void OnEnable()
+        public void LoadSaveData(TestSaveData2 saveData)
         {
-            _loadGameResponseHandler.Activate();
-        }
-
-        private void OnDisable()
-        {
-            _loadGameResponseHandler.Deactivate();
-        }
-
-        private void Load(LoadGameResponse loadGameResponse)
-        {
-            LoadedData loadedData = loadGameResponse.LoadedData;
-            
-            // TODO: Saveable type is only stored on the saveable which makes it harder to access from here.
-            // TODO: But this shouldnt really be done from here anyway. This should be done either in the saveable or in the save manager.
-            Saveable saveable = GetComponent<Saveable>();
-            SaveableType saveableType = saveable.SaveableType;
-            TestSaveData loadedTestSaveData = loadedData.GetSaveData<TestSaveData>(saveable.SaveableType, saveable.GUID);
-            
-            testSaveData = loadedTestSaveData;
+            testSaveData2 = saveData;
         }
     }
     

@@ -73,10 +73,11 @@ namespace _Project.SaveSystem
         {
             HeadJSONContainer headJSONContainer = new HeadJSONContainer();
             
+            // TODO: very temporary commented out, if i forget to remove i am dumdum.
             foreach (var saveable in _saveables)
             {
                 var saveDatas = saveable.GetSaveData();
-
+            
                 SubJSONContainer container = new SubJSONContainer
                 {
                     GUID = saveable.GUID,

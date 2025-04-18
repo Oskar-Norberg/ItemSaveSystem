@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using _Project.SaveSystem.Events;
+using _Project.SaveSystem.Interfaces;
+using ringo.EventSystem;
 using ringo.ServiceLocator;
 using UnityEditor;
 using UnityEngine;
@@ -9,12 +12,14 @@ namespace _Project.SaveSystem
     [Serializable]
     public class Saveable : MonoBehaviour
     {
-        // TODO: I think if this is created at runtime it will not get a GUID. So as a fallback a GUID should be created in the awake function too.
+        // TODO: Consider moving this to another class and adding a RequireComponent attribute.
         public string GUID => guid.GuidString;
         public SaveableType SaveableType => saveableType;
         
         [SerializeField, HideInInspector] private SerializableGuid guid;
         [SerializeField] private SaveableType saveableType;
+        
+        private ArgumentEventHandler<LoadGameResponse> _loadGameResponseHandler;
         
         // String is type name.
         private Dictionary<string, SaveData> _saveData = new();
@@ -24,10 +29,27 @@ namespace _Project.SaveSystem
             if (!guid)
                 guid = new SerializableGuid();
             
+            // TODO: Unbind on destroy.
             ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
+            _loadGameResponseHandler = new ArgumentEventHandler<LoadGameResponse>(LoadGame);
         }
         
-        #if UNITY_EDITOR
+        private void OnEnable()
+        {
+            _loadGameResponseHandler.Activate();
+        }
+
+        private void OnDisable()
+        {
+            _loadGameResponseHandler.Deactivate();
+        }
+        
+        private void LoadGame(LoadGameResponse loadGameResponse)
+        {
+            
+        }
+
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (!guid || IsDuplicate())
@@ -60,19 +82,6 @@ namespace _Project.SaveSystem
 
             return false;
         }
-        #endif
-
-        public Dictionary<string, SaveData> GetSaveData()
-        {
-            return _saveData;
-        }
-        
-        public void BindSaveData(SaveData saveData)
-        {
-            if (saveData == null) 
-                return;
-            
-            _saveData[saveData.GetType().Name] = saveData;
-        }
+#endif
     }
 }
