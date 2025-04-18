@@ -381,6 +381,10 @@ MonoBehaviour:
     X: 22
     Y: 24
     Z: 2
+  testSaveData2:
+    A: help
+    B: i am in
+    C: great pain
 --- !u!114 &1542227319
 MonoBehaviour:
   m_ObjectHideFlags: 0

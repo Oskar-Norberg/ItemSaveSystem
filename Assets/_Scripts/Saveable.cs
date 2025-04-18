@@ -15,7 +15,8 @@ namespace _Project.SaveSystem
         [SerializeField, HideInInspector] private SerializableGuid guid;
         [SerializeField] private SaveableType saveableType;
         
-        private List<SaveData> _saveData = new();
+        // String is type name.
+        private Dictionary<string, SaveData> _saveData = new();
         
         #if UNITY_EDITOR
         private void OnValidate()
@@ -30,7 +31,7 @@ namespace _Project.SaveSystem
             ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
         }
 
-        public List<SaveData> GetSaveData()
+        public Dictionary<string, SaveData> GetSaveData()
         {
             return _saveData;
         }
@@ -40,7 +41,7 @@ namespace _Project.SaveSystem
             if (saveData == null) 
                 return;
             
-            _saveData.Add(saveData);
+            _saveData[saveData.GetType().Name] = saveData;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -81,9 +82,9 @@ public struct JSONContainer
 {
     public string GUID;
     public SaveableType SaveableType;
-    public List<SaveData> Data;
+    public Dictionary<string, SaveData> Data;
 
-    public JSONContainer(string guid, SaveableType saveableType, List<SaveData> data)
+    public JSONContainer(string guid, SaveableType saveableType, Dictionary<string, SaveData> data)
     {
         GUID = guid;
         Data = data;
