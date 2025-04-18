@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using _Project.SaveSystem;
@@ -11,6 +12,8 @@ namespace _Project.SaveSystem
 {   
     public class SaveManager : MonoBehaviour
     {
+        public LoadedData LoadedData { get; private set; }
+        
         const string SaveFileName = "save.json";
         
         private NoArgumentEventHandler<SaveGameRequest> _saveGameRequestHandler;
@@ -54,7 +57,9 @@ namespace _Project.SaveSystem
             
             HeadJSONContainer headJSONContainer = JsonConvert.DeserializeObject<HeadJSONContainer>(json);
             
-            print("test");
+            LoadedData = new LoadedData(headJSONContainer);
+            
+            EventBus.Publish(new LoadGameResponse());
         }
 
         private void SaveGame()
@@ -89,6 +94,39 @@ namespace _Project.SaveSystem
         private static string GetPathString()
         {
             return Application.persistentDataPath + "/" + SaveFileName;
+        }
+    }
+}
+
+public class LoadedData
+{
+    private Dictionary<SaveableType, Dictionary<string, SubJSONContainer>> _saveablesByType = new();
+    
+    // String is the GUID of the saveable.
+    private Dictionary<string, SubJSONContainer> _saveDatas = new();
+
+    public LoadedData(HeadJSONContainer headJsonContainer)
+    {
+        // Populate _saveDatas with all subcontainers.
+        foreach (var subContainer in headJsonContainer.SubContainers)
+        {
+            _saveDatas[subContainer.GUID] = subContainer;
+        }
+
+        // Group subcontainers by SaveableType.
+        foreach (SaveableType type in Enum.GetValues(typeof(SaveableType)))
+        {
+            var subContainers = new Dictionary<string, SubJSONContainer>();
+
+            foreach (var saveData in _saveDatas)
+            {
+                if (saveData.Value.SaveableType == type)
+                {
+                    subContainers[saveData.Key] = saveData.Value;
+                }
+            }
+
+            _saveablesByType[type] = subContainers;
         }
     }
 }
