@@ -12,6 +12,11 @@ namespace _Project.SaveSystem.SaveGameEventSender
             {
                 EventBus.Publish(new SaveGameRequest());
             }
+            
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                EventBus.Publish(new LoadGameRequest());
+            }
         }
     }
 }
