@@ -95,7 +95,6 @@ namespace _Project.SaveSystem
             writer.Formatting = Formatting.Indented;
             
             jsonSerializer.Serialize(writer, headJSONContainer);
-            writer.Flush();
             
             writer.Close();
             streamWriter.Close();
