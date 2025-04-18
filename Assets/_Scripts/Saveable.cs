@@ -10,8 +10,10 @@ namespace _Project.SaveSystem
     public class Saveable : MonoBehaviour
     {
         public string GUID => guid.GuidString;
+        public SaveableType SaveableType => saveableType;
         
         [SerializeField, HideInInspector] private SerializableGuid guid;
+        [SerializeField] private SaveableType saveableType;
         
         private List<SaveData> _saveData = new();
         

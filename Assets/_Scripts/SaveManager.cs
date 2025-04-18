@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using _Project.SaveSystem;
 using _Project.SaveSystem.Events;
 using _Project.SaveSystem.Interfaces;
 using Newtonsoft.Json;
@@ -50,6 +51,7 @@ namespace _Project.SaveSystem
                 JSONContainer container = new JSONContainer
                 {
                     GUID = saveable.GUID,
+                    SaveableType = saveable.SaveableType,
                     Data = saveDatas
                 };
                 
@@ -78,11 +80,13 @@ namespace _Project.SaveSystem
 public struct JSONContainer
 {
     public string GUID;
+    public SaveableType SaveableType;
     public List<SaveData> Data;
 
-    public JSONContainer(string guid, List<SaveData> data)
+    public JSONContainer(string guid, SaveableType saveableType, List<SaveData> data)
     {
         GUID = guid;
         Data = data;
+        SaveableType = saveableType;
     }
 }
