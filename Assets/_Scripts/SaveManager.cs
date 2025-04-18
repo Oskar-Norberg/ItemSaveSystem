@@ -41,25 +41,23 @@ namespace _Project.SaveSystem
 
         private void SaveGame()
         {
-            StringBuilder jsonStringBuilder = new StringBuilder();
+            HeadJSONContainer headJSONContainer = new HeadJSONContainer();
             
             foreach (var saveable in _saveables)
             {
                 var saveDatas = saveable.GetSaveData();
 
-                JSONContainer container = new JSONContainer
+                SubJSONContainer container = new SubJSONContainer
                 {
                     GUID = saveable.GUID,
                     SaveableType = saveable.SaveableType,
                     Data = saveDatas
                 };
                 
-                string jsonString = JsonConvert.SerializeObject(container, Formatting.Indented);
-                jsonStringBuilder.Append(jsonString);
+                headJSONContainer.AddSubContainer(container);
             }
             
-            SaveToFile(jsonStringBuilder.ToString());
-            
+            SaveToFile(JsonConvert.SerializeObject(headJSONContainer, Formatting.Indented));
             EventBus.Publish(new SaveGameResponse());
         }
 
@@ -78,13 +76,24 @@ namespace _Project.SaveSystem
 }
 
 [System.Serializable]
-public struct JSONContainer
+public class HeadJSONContainer
+{
+    public List<SubJSONContainer> SubContainers = new();
+    
+    public void AddSubContainer(SubJSONContainer subContainer)
+    {
+        SubContainers.Add(subContainer);
+    }
+}
+
+[System.Serializable]
+public struct SubJSONContainer
 {
     public string GUID;
     public SaveableType SaveableType;
     public Dictionary<string, SaveData> Data;
 
-    public JSONContainer(string guid, SaveableType saveableType, Dictionary<string, SaveData> data)
+    public SubJSONContainer(string guid, SaveableType saveableType, Dictionary<string, SaveData> data)
     {
         GUID = guid;
         Data = data;
