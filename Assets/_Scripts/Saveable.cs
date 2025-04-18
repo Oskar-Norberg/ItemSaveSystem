@@ -48,6 +48,11 @@ namespace _Project.SaveSystem
         {
             
         }
+        
+        public Dictionary<string, SaveData> GetSaveData()
+        {
+            return _saveData;
+        }
 
 #if UNITY_EDITOR
         private void OnValidate()
