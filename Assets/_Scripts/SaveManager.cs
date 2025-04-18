@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using _Project.SaveSystem;
 using _Project.SaveSystem.Events;
 using Newtonsoft.Json;
@@ -15,6 +14,7 @@ namespace _Project.SaveSystem
         const string SaveFileName = "save.json";
         
         private NoArgumentEventHandler<SaveGameRequest> _saveGameRequestHandler;
+        private NoArgumentEventHandler<LoadGameRequest> _loadGameRequestHandler;
         
         private List<Saveable> _saveables = new();
         
@@ -22,6 +22,7 @@ namespace _Project.SaveSystem
         {
             ServiceLocator.Instance.Register<SaveManager>(this);
             _saveGameRequestHandler = new NoArgumentEventHandler<SaveGameRequest>(SaveGame);
+            _loadGameRequestHandler = new NoArgumentEventHandler<LoadGameRequest>(LoadGame);
         }
 
         private void OnEnable()
@@ -37,6 +38,9 @@ namespace _Project.SaveSystem
         public void BindSaveable(Saveable saveable)
         {
             _saveables.Add(saveable);
+        }
+
+        private void LoadGame()
         }
 
         private void SaveGame()
