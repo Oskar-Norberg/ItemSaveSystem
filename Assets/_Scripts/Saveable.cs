@@ -19,12 +19,14 @@ namespace _Project.SaveSystem
         // String is type name.
         private Dictionary<string, SaveData> _saveData = new();
         
+        
+        
         #if UNITY_EDITOR
         private void OnValidate()
         {
             if (!guid || IsDuplicate())
             {
-                guid = new SerializableGuid(Guid.NewGuid());
+                guid = new SerializableGuid();
                 EditorUtility.SetDirty(this);
             }
         }

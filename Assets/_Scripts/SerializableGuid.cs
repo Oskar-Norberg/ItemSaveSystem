@@ -3,18 +3,13 @@
 namespace _Project.SaveSystem
 {
     [Serializable]
-    public struct SerializableGuid
+    public class SerializableGuid
     {
         public string GuidString;
         
-        public SerializableGuid(Guid guid)
+        public SerializableGuid()
         {
-            GuidString = guid.ToString();
-        }
-        
-        public SerializableGuid(string guidString)
-        {
-            GuidString = guidString;
+            GuidString = Guid.NewGuid().ToString();
         }
 
         public static implicit operator bool(SerializableGuid serializableGuid)
