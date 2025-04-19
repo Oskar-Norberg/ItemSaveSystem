@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using _Project.SaveSystem;
 using _Project.SaveSystem.Events;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using ringo.EventSystem;
 using ringo.ServiceLocator;
@@ -100,6 +101,7 @@ namespace _Project.SaveSystem
             writer.Close();
             streamWriter.Close();
             
+            // TODO: This really should not be sending the entire loaded data. Should only send the data relevant to bound saveables.
             EventBus.Publish(new SaveGameResponse());
         }
 
@@ -151,20 +153,15 @@ public class LoadedData
         // }
     }
 
-    public T GetSaveData<T>(SaveableType type, string guid) where T : SaveData
+    [CanBeNull]
+    public SubJSONContainer? GetSaveData( string guid)
     {
-        if (_saveDatas.TryGetValue(guid, out var saveData))
+        if (_saveDatas.TryGetValue(guid, out var subJSONContainer))
         {
-            // TODO O(n). This should be a dictionary. Will most likely be called quite frequently.
-            foreach (var data in saveData.Data)
-            {
-                string typeName = typeof(T).Name;
-                if (data.Key == typeName)
-                    return data.Value as T;
-            }
+            return subJSONContainer;
         }
-
-        Debug.LogWarning("No save data found for GUID: " + guid + ", type: " + type + ", data type: " + typeof(T).Name);
+        
+        Debug.LogError($"Save data with GUID {guid} not found.");
         return null;
     }
 }

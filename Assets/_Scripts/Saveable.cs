@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using _Project.SaveSystem.Events;
 using _Project.SaveSystem.Interfaces;
 using ringo.EventSystem;
@@ -21,8 +22,8 @@ namespace _Project.SaveSystem
         
         private ArgumentEventHandler<LoadGameResponse> _loadGameResponseHandler;
         
-        // String is type name.
-        private Dictionary<string, SaveData> _saveData = new();
+        // String is name of bond.
+        private Dictionary<string, IBindable> _bonds = new();
         
         private void Awake()
         {
@@ -43,15 +44,24 @@ namespace _Project.SaveSystem
         {
             _loadGameResponseHandler.Deactivate();
         }
-        
-        private void LoadGame(LoadGameResponse loadGameResponse)
+
+        public void Bind(string bindName, IBindable bindable)
         {
-            
+            _bonds[bindName] = bindable;
         }
         
         public Dictionary<string, SaveData> GetSaveData()
         {
-            return _saveData;
+            // TODO: Consider making this a list of SaveData instead of a dictionary.
+            // TODO: This will generate a bit of garbage.
+            return _bonds.ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value.GetSaveData());
+        }
+        
+        private void LoadGame(LoadGameResponse loadGameResponse)
+        {
+
         }
 
 #if UNITY_EDITOR

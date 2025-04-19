@@ -5,29 +5,29 @@ using UnityEngine;
 namespace _Project.SaveSystem._Dev
 {
     [RequireComponent(typeof(Saveable))]
-    public class TestSaver : MonoBehaviour, IBindable<TestSaveData>, IBindable<TestSaveData2>
+    public class TestSaver : MonoBehaviour, IBindable
     {
         [SerializeField] private TestSaveData testSaveData;
-        [SerializeField] private TestSaveData2 testSaveData2;
-        
-        TestSaveData IBindable<TestSaveData>.GetSaveData()
+
+        private void Start()
+        {
+            GetComponent<Saveable>().Bind("TestData", this);
+        }
+
+        public SaveData GetSaveData()
         {
             return testSaveData;
         }
-        
-        TestSaveData2 IBindable<TestSaveData2>.GetSaveData()
-        {
-            return testSaveData2;
-        }
-        
-        public void LoadSaveData(TestSaveData saveData)
-        {
-            testSaveData = saveData;
-        }
 
-        public void LoadSaveData(TestSaveData2 saveData)
+        public void LoadSaveData(SaveData saveData)
         {
-            testSaveData2 = saveData;
+            if (saveData is not TestSaveData testSaveData)
+            {
+                Debug.LogError($"Save data is not of type {nameof(TestSaveData)}");
+                return;
+            }
+            
+            this.testSaveData = testSaveData;
         }
     }
     
