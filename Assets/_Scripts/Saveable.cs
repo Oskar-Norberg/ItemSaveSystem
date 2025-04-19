@@ -20,8 +20,6 @@ namespace _Project.SaveSystem
         [SerializeField, HideInInspector] private SerializableGuid guid;
         [SerializeField] private SaveableType saveableType;
         
-        private ArgumentEventHandler<LoadGameResponse> _loadGameResponseHandler;
-        
         // String is name of bond.
         private Dictionary<string, IBindable> _bonds = new();
         
@@ -32,22 +30,26 @@ namespace _Project.SaveSystem
             
             // TODO: Unbind on destroy.
             ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
-            _loadGameResponseHandler = new ArgumentEventHandler<LoadGameResponse>(LoadGame);
-        }
-        
-        private void OnEnable()
-        {
-            _loadGameResponseHandler.Activate();
-        }
-
-        private void OnDisable()
-        {
-            _loadGameResponseHandler.Deactivate();
         }
 
         public void Bind(string bindName, IBindable bindable)
         {
             _bonds[bindName] = bindable;
+        }
+        
+        public void Load(Dictionary<string, SaveData> loadedData)
+        {
+            foreach (var kvp in loadedData)
+            {
+                if (_bonds.TryGetValue(kvp.Key, out var bindable))
+                {
+                    bindable.LoadSaveData(kvp.Value);
+                }
+                else
+                {
+                    Debug.LogWarning($"No bond found for {kvp.Key} in {gameObject.name}");
+                }
+            }
         }
         
         public Dictionary<string, SaveData> GetSaveData()
@@ -57,11 +59,6 @@ namespace _Project.SaveSystem
             return _bonds.ToDictionary(
                 kvp => kvp.Key,
                 kvp => kvp.Value.GetSaveData());
-        }
-        
-        private void LoadGame(LoadGameResponse loadGameResponse)
-        {
-
         }
 
 #if UNITY_EDITOR

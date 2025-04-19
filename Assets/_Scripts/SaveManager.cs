@@ -54,6 +54,7 @@ namespace _Project.SaveSystem
                 return;
             }
             
+            // TODO: Move this to a separate Serializer/Deserializer class.
             JsonSerializer jsonSerializer = new JsonSerializer();
             StreamReader streamReader = new StreamReader(GetPathString());
             JsonReader reader = new JsonTextReader(streamReader);
@@ -66,8 +67,20 @@ namespace _Project.SaveSystem
             streamReader.Close();
             
             LoadedData = new LoadedData(headJSONContainer);
+
+            foreach (var saveable in _saveables)
+            {
+                if (LoadedData.TryGetDataByGUID(saveable.GUID, out var data))
+                {
+                    saveable.Load(data);
+                }
+                else
+                {
+                    Debug.LogWarning($"Saveable {saveable.GUID} not found in loaded data.");
+                }
+            }
             
-            EventBus.Publish(new LoadGameResponse(LoadedData));
+            EventBus.Publish(new LoadGameResponse());
         }
 
         private void SaveGame()
@@ -101,7 +114,6 @@ namespace _Project.SaveSystem
             writer.Close();
             streamWriter.Close();
             
-            // TODO: This really should not be sending the entire loaded data. Should only send the data relevant to bound saveables.
             EventBus.Publish(new SaveGameResponse());
         }
 
@@ -135,34 +147,18 @@ public class LoadedData
         {
             _saveDatas[subContainer.GUID] = subContainer;
         }
-
-        // // Group subcontainers by SaveableType.
-        // foreach (SaveableType type in Enum.GetValues(typeof(SaveableType)))
-        // {
-        //     var subContainers = new Dictionary<string, SubJSONContainer>();
-        //
-        //     foreach (var saveData in _saveDatas)
-        //     {
-        //         if (saveData.Value.SaveableType == type)
-        //         {
-        //             subContainers[saveData.Key] = saveData.Value;
-        //         }
-        //     }
-        //
-        //     _saveablesByType[type] = subContainers;
-        // }
     }
-
-    [CanBeNull]
-    public SubJSONContainer? GetSaveData( string guid)
+    
+    public bool TryGetDataByGUID(string guid, out Dictionary<string, SaveData> data)
     {
-        if (_saveDatas.TryGetValue(guid, out var subJSONContainer))
+        if (_saveDatas.TryGetValue(guid, out var subContainer))
         {
-            return subJSONContainer;
+            data = subContainer.Data;
+            return true;
         }
         
-        Debug.LogError($"Save data with GUID {guid} not found.");
-        return null;
+        data = null;
+        return false;
     }
 }
 
