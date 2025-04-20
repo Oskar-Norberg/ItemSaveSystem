@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using _Project.SaveSystem.Events;
 using _Project.SaveSystem.Interfaces;
-using ringo.EventSystem;
 using ringo.ServiceLocator;
 using UnityEditor;
 using UnityEngine;
@@ -34,7 +32,10 @@ namespace _Project.SaveSystem
 
         public void Bind(string bindName, IBindable bindable)
         {
-            _bonds[bindName] = bindable;
+            if (!_bonds.TryAdd(bindName, bindable))
+            {
+                Debug.LogWarning($"Bond {bindName} already exists in {gameObject.name}");
+            }
         }
         
         public void Load(Dictionary<string, SaveData> loadedData)
