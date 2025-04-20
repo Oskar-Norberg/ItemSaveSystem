@@ -68,13 +68,13 @@ namespace _Project.SaveSystem
 
             foreach (var saveable in _saveables)
             {
-                if (LoadedData.TryGetDataByGUID(saveable.GUID, out var data))
+                if (LoadedData.TryGetDataByGUID(saveable.GUIDString, out var data))
                 {
                     saveable.Load(data);
                 }
                 else
                 {
-                    Debug.LogWarning($"Saveable {saveable.GUID} not found in loaded data.");
+                    Debug.LogWarning($"Saveable {saveable.GUIDString} not found in loaded data.");
                 }
             }
             
@@ -92,7 +92,7 @@ namespace _Project.SaveSystem
             
                 SubJSONContainer container = new SubJSONContainer
                 {
-                    GUID = saveable.GUID,
+                    GUID = saveable.GUIDString,
                     SaveableType = saveable.SaveableType,
                     Data = saveDatas
                 };
