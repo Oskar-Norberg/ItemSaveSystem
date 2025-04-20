@@ -38,6 +38,14 @@ namespace _Project.SaveSystem
             }
         }
         
+        public void Unbind(string bindName)
+        {
+            if (!_bonds.Remove(bindName))
+            {
+                Debug.LogWarning($"Bond {bindName} does not exist in {gameObject.name}");
+            }
+        }
+        
         public void Load(Dictionary<string, SaveData> loadedData)
         {
             foreach (var kvp in loadedData)

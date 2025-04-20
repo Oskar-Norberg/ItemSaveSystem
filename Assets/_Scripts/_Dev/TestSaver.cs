@@ -13,6 +13,11 @@ namespace _Project.SaveSystem._Dev
         {
             GetComponent<Saveable>().Bind("TestData", this);
         }
+        
+        private void OnDestroy()
+        {
+            GetComponent<Saveable>().Unbind("TestData");
+        }
 
         public SaveData GetSaveData()
         {
