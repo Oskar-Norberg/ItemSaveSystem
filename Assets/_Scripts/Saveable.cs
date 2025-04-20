@@ -29,6 +29,8 @@ namespace _Project.SaveSystem
             
             // TODO: Unbind on destroy.
             ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
+            
+            PostAwakeErrorChecking();
         }
 
         public void Bind(string bindName, IBindable bindable)
@@ -69,6 +71,20 @@ namespace _Project.SaveSystem
             return _bonds.ToDictionary(
                 kvp => kvp.Key,
                 kvp => kvp.Value.GetSaveData());
+        }
+
+        private void PostAwakeErrorChecking()
+        {
+            if (!_monoSerializableGuid)
+            {
+                Debug.LogError($"No {nameof(MonoSerializableGuid)} found on {gameObject.name}");
+            }
+
+            Component[] saveables = GetComponents(typeof(Saveable));
+            if (saveables.Length > 1)
+            {
+                Debug.LogError($"Multiple {nameof(Saveable)} components found on {gameObject.name}. This will break saving of this object.");
+            }
         }
     }
 }
