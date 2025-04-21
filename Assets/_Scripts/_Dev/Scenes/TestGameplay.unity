@@ -341,6 +341,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1542227317}
+  - component: {fileID: 1542227320}
   - component: {fileID: 1542227319}
   - component: {fileID: 1542227318}
   m_Layer: 0
@@ -381,10 +382,6 @@ MonoBehaviour:
     X: 22
     Y: 24
     Z: 2
-  testSaveData2:
-    A: help
-    B: i am in
-    C: great pain
 --- !u!114 &1542227319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,9 +394,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1582be70ffe43e2bb699ac00450fc68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guid:
-    GuidString: d848a4de-854e-4b4f-8a95-853d64e78142
   saveableType: 2
+--- !u!114 &1542227320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1542227316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5260db1aaebc4698b62b361537083e88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid:
+    GuidString: 5518e2d4-1a55-4ca7-8c5d-b69d811d4132
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

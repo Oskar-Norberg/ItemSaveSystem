@@ -1,78 +1,96 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using _Project.SaveSystem.Interfaces;
 using ringo.ServiceLocator;
-using UnityEditor;
 using UnityEngine;
 
 namespace _Project.SaveSystem
 {
     [Serializable]
-    public class Saveable : MonoBehaviour
+    [RequireComponent(typeof(MonoSerializableGuid))]
+    public class Saveable : MonoBehaviour, IGUIDHolder
     {
-        // TODO: I think if this is created at runtime it will not get a GUID. So as a fallback a GUID should be created in the awake function too.
-        public string GUID => guid.GuidString;
         public SaveableType SaveableType => saveableType;
+
+        public string GUIDString => _monoSerializableGuid.GUIDString;
+        public SerializableGuid GUID => _monoSerializableGuid.GUID;
         
-        [SerializeField, HideInInspector] private SerializableGuid guid;
         [SerializeField] private SaveableType saveableType;
         
-        // String is type name.
-        private Dictionary<string, SaveData> _saveData = new();
+        // String is name of bond.
+        private Dictionary<string, IBindable> _bonds = new();
+        
+        private MonoSerializableGuid _monoSerializableGuid;
         
         private void Awake()
         {
-            if (!guid)
-                guid = new SerializableGuid();
+            _monoSerializableGuid = GetComponent<MonoSerializableGuid>();
             
+            // TODO: Unbind on destroy.
             ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
+            
+            PostAwakeErrorChecking();
         }
-        
-        #if UNITY_EDITOR
-        private void OnValidate()
+
+        private void OnDestroy()
         {
-            if (!guid || IsDuplicate())
+            ServiceLocator.Instance.GetService<SaveManager>().UnbindSaveable(this);
+        }
+
+        public void Bind(string bindName, IBindable bindable)
+        {
+            if (!_bonds.TryAdd(bindName, bindable))
             {
-                guid = new SerializableGuid();
-                EditorUtility.SetDirty(this);
+                Debug.LogWarning($"Bond {bindName} already exists in {gameObject.name}");
             }
         }
-
-        private bool IsDuplicate()
+        
+        // TODO: This API allows user to unbind bonds that are not theirs. Consider passing the bindable and checking if it is the same.
+        public void Unbind(string bindName)
         {
-            var saveableObjects = FindObjectsByType(typeof(Saveable), FindObjectsInactive.Include, FindObjectsSortMode.None);
-
-            foreach (var saveableObject in saveableObjects)
+            if (!_bonds.Remove(bindName))
             {
-                var saveable = saveableObject as Saveable;
-                
-                if (saveable == null)
-                    Debug.LogError(saveableObject + " is not a Saveable");
-                
-                if (saveable == this)
-                    continue;
-                
-                if (saveable.guid == guid)
+                Debug.LogWarning($"Bond {bindName} does not exist in {gameObject.name}");
+            }
+        }
+        
+        public void Load(Dictionary<string, SaveData> loadedData)
+        {
+            foreach (var kvp in loadedData)
+            {
+                if (_bonds.TryGetValue(kvp.Key, out var bindable))
                 {
-                    Debug.Log("Duplicate GUID found, fixing issue.");
-                    return true;
+                    bindable.LoadSaveData(kvp.Value);
+                }
+                else
+                {
+                    Debug.LogWarning($"No bond found for {kvp.Key} in {gameObject.name}");
                 }
             }
-
-            return false;
-        }
-        #endif
-
-        public Dictionary<string, SaveData> GetSaveData()
-        {
-            return _saveData;
         }
         
-        public void BindSaveData(SaveData saveData)
+        public Dictionary<string, SaveData> GetSaveData()
         {
-            if (saveData == null) 
-                return;
-            
-            _saveData[saveData.GetType().Name] = saveData;
+            // TODO: Consider making this a list of SaveData instead of a dictionary.
+            // TODO: This will generate a bit of garbage.
+            return _bonds.ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value.GetSaveData());
+        }
+
+        private void PostAwakeErrorChecking()
+        {
+            if (!_monoSerializableGuid)
+            {
+                Debug.LogError($"No {nameof(MonoSerializableGuid)} found on {gameObject.name}");
+            }
+
+            Component[] saveables = GetComponents(typeof(Saveable));
+            if (saveables.Length > 1)
+            {
+                Debug.LogError($"Multiple {nameof(Saveable)} components found on {gameObject.name}. This will break saving of this object.");
+            }
         }
     }
 }

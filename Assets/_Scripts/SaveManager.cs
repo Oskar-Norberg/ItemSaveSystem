@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using _Project.SaveSystem;
@@ -45,6 +44,14 @@ namespace _Project.SaveSystem
             _saveables.Add(saveable);
         }
 
+        public void UnbindSaveable(Saveable saveable)
+        {
+            if (!_saveables.Remove(saveable))
+            {
+                Debug.LogWarning($"Saveable {saveable.GUIDString} not found in saveables list.");
+            }
+        }
+
         private void LoadGame()
         {
             if (!File.Exists(GetPathString()))
@@ -53,6 +60,7 @@ namespace _Project.SaveSystem
                 return;
             }
             
+            // TODO: Move this to a separate Serializer/Deserializer class.
             JsonSerializer jsonSerializer = new JsonSerializer();
             StreamReader streamReader = new StreamReader(GetPathString());
             JsonReader reader = new JsonTextReader(streamReader);
@@ -65,8 +73,20 @@ namespace _Project.SaveSystem
             streamReader.Close();
             
             LoadedData = new LoadedData(headJSONContainer);
+
+            foreach (var saveable in _saveables)
+            {
+                if (LoadedData.TryGetDataByGUID(saveable.GUIDString, out var data))
+                {
+                    saveable.Load(data);
+                }
+                else
+                {
+                    Debug.LogWarning($"Saveable {saveable.GUIDString} not found in loaded data.");
+                }
+            }
             
-            EventBus.Publish(new LoadGameResponse(LoadedData));
+            EventBus.Publish(new LoadGameResponse());
         }
 
         private void SaveGame()
@@ -76,10 +96,10 @@ namespace _Project.SaveSystem
             foreach (var saveable in _saveables)
             {
                 var saveDatas = saveable.GetSaveData();
-
+            
                 SubJSONContainer container = new SubJSONContainer
                 {
-                    GUID = saveable.GUID,
+                    GUID = saveable.GUIDString,
                     SaveableType = saveable.SaveableType,
                     Data = saveDatas
                 };
@@ -116,12 +136,8 @@ namespace _Project.SaveSystem
     }
 }
 
-// TODO: theres a lot of voodoo going on with the dataTypeName, should really be passed around as a type instead.
 public class LoadedData
 {
-    // TODO: Implement a way to get saveables by type.
-    // private Dictionary<SaveableType, Dictionary<string, SubJSONContainer>> _saveablesByType = new();
-    
     // String is the GUID of the saveable.
     private Dictionary<string, SubJSONContainer> _saveDatas = new();
 
@@ -132,39 +148,18 @@ public class LoadedData
         {
             _saveDatas[subContainer.GUID] = subContainer;
         }
-
-        // // Group subcontainers by SaveableType.
-        // foreach (SaveableType type in Enum.GetValues(typeof(SaveableType)))
-        // {
-        //     var subContainers = new Dictionary<string, SubJSONContainer>();
-        //
-        //     foreach (var saveData in _saveDatas)
-        //     {
-        //         if (saveData.Value.SaveableType == type)
-        //         {
-        //             subContainers[saveData.Key] = saveData.Value;
-        //         }
-        //     }
-        //
-        //     _saveablesByType[type] = subContainers;
-        // }
     }
-
-    public T GetSaveData<T>(SaveableType type, string guid) where T : SaveData
+    
+    public bool TryGetDataByGUID(string guid, out Dictionary<string, SaveData> data)
     {
-        if (_saveDatas.TryGetValue(guid, out var saveData))
+        if (_saveDatas.TryGetValue(guid, out var subContainer))
         {
-            // TODO O(n). This should be a dictionary. Will most likely be called quite frequently.
-            foreach (var data in saveData.Data)
-            {
-                string typeName = typeof(T).Name;
-                if (data.Key == typeName)
-                    return data.Value as T;
-            }
+            data = subContainer.Data;
+            return true;
         }
-
-        Debug.LogWarning("No save data found for GUID: " + guid + ", type: " + type + ", data type: " + typeof(T).Name);
-        return null;
+        
+        data = null;
+        return false;
     }
 }
 
