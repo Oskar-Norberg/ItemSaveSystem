@@ -44,6 +44,14 @@ namespace _Project.SaveSystem
             _saveables.Add(saveable);
         }
 
+        public void UnbindSaveable(Saveable saveable)
+        {
+            if (!_saveables.Remove(saveable))
+            {
+                Debug.LogWarning($"Saveable {saveable.GUIDString} not found in saveables list.");
+            }
+        }
+
         private void LoadGame()
         {
             if (!File.Exists(GetPathString()))
@@ -85,7 +93,6 @@ namespace _Project.SaveSystem
         {
             HeadJSONContainer headJSONContainer = new HeadJSONContainer();
             
-            // TODO: very temporary commented out, if i forget to remove i am dumdum.
             foreach (var saveable in _saveables)
             {
                 var saveDatas = saveable.GetSaveData();
@@ -129,12 +136,8 @@ namespace _Project.SaveSystem
     }
 }
 
-// TODO: theres a lot of voodoo going on with the dataTypeName, should really be passed around as a type instead.
 public class LoadedData
 {
-    // TODO: Implement a way to get saveables by type.
-    // private Dictionary<SaveableType, Dictionary<string, SubJSONContainer>> _saveablesByType = new();
-    
     // String is the GUID of the saveable.
     private Dictionary<string, SubJSONContainer> _saveDatas = new();
 

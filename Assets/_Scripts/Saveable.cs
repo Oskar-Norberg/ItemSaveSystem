@@ -33,6 +33,11 @@ namespace _Project.SaveSystem
             PostAwakeErrorChecking();
         }
 
+        private void OnDestroy()
+        {
+            ServiceLocator.Instance.GetService<SaveManager>().UnbindSaveable(this);
+        }
+
         public void Bind(string bindName, IBindable bindable)
         {
             if (!_bonds.TryAdd(bindName, bindable))
@@ -41,6 +46,7 @@ namespace _Project.SaveSystem
             }
         }
         
+        // TODO: This API allows user to unbind bonds that are not theirs. Consider passing the bindable and checking if it is the same.
         public void Unbind(string bindName)
         {
             if (!_bonds.Remove(bindName))
