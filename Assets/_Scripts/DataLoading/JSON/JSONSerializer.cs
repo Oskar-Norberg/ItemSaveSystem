@@ -8,24 +8,9 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
     {
         private const string FileExtension = ".json";
         
-        public bool Serialize(List<Saveable> saveables, string path)
+        public bool Serialize(object objectToSerialize, string path)
         {
-            HeadJSONContainer headJSONContainer = new HeadJSONContainer();
-            
-            foreach (var saveable in saveables)
-            {
-                var saveDatas = saveable.GetSaveData();
-            
-                SubJSONContainer container = new SubJSONContainer
-                {
-                    GUID = saveable.GUID,
-                    SaveableType = saveable.SaveableType,
-                    Data = saveDatas
-                };
-                
-                headJSONContainer.AddSubContainer(container);
-            }
-            
+            // TOOD: Factory method to create the correct JSONContainer.
             JsonSerializer jsonSerializer = new JsonSerializer();
             StreamWriter streamWriter = new StreamWriter(GetPathString(path));
             JsonWriter writer = new JsonTextWriter(streamWriter);
@@ -33,7 +18,7 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
             writer.Formatting = Formatting.Indented;
             
-            jsonSerializer.Serialize(writer, headJSONContainer);
+            jsonSerializer.Serialize(writer, objectToSerialize);
             
             writer.Close();
             streamWriter.Close();
@@ -41,12 +26,12 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             return true;
         }
 
-        public ILoadedData Deserialize(string path)
+        public T Deserialize<T>(string path)
         {
             if (!File.Exists(GetPathString(path)))
             {
                 // TODO: Change this to a TryDeserialize method that returns a bool. (This should return false)
-                return null;
+                return default;
             }
             
             // TODO: Move this to a separate Serializer/Deserializer class.
@@ -56,12 +41,12 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             
             jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
                 
-            HeadJSONContainer headJSONContainer = jsonSerializer.Deserialize<HeadJSONContainer>(reader);
+            T deserializedObject = jsonSerializer.Deserialize<T>(reader);
             
             reader.Close();
             streamReader.Close();
             
-            return new JSONLoadedData(headJSONContainer);
+            return deserializedObject;
         }
         
         private string GetPathString(string path)
