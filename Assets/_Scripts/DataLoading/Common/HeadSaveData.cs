@@ -30,6 +30,12 @@ namespace _Project.SaveSystem.DataLoading.Common
             {
                 if (Equals(container.GUID, guid))
                 {
+                    if (container.Data == null)
+                        break;
+                    
+                    if (container.Data.Count == 0)
+                        break;
+                    
                     data = container.Data;
                     return true;
                 }
