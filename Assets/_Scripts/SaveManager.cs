@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using System.IO;
 using _Project.SaveSystem.Events;
-using Newtonsoft.Json;
+using _Project.SaveSystem.Interfaces;
+using _Project.SaveSystem.Interfaces.DataLoading;
 using ringo.EventSystem;
 using ringo.ServiceLocator;
 using UnityEngine;
@@ -10,20 +10,27 @@ namespace _Project.SaveSystem
 {   
     public class SaveManager : MonoBehaviour
     {
-        public LoadedData LoadedData { get; private set; }
+        public ILoadedData LoadedData { get; private set; }
         
-        const string SaveFileName = "save.json";
+        private const string SaveFileName = "creatively_named_save_file";
         
         private NoArgumentEventHandler<SaveGameRequest> _saveGameRequestHandler;
         private NoArgumentEventHandler<LoadGameRequest> _loadGameRequestHandler;
         
         private List<Saveable> _saveables = new();
+
+        private ISerializer _serializer;
         
         private void Awake()
         {
             ServiceLocator.Instance.Register<SaveManager>(this);
             _saveGameRequestHandler = new NoArgumentEventHandler<SaveGameRequest>(SaveGame);
             _loadGameRequestHandler = new NoArgumentEventHandler<LoadGameRequest>(LoadGame);
+        }
+
+        private void Start()
+        {
+            _serializer = ServiceLocator.Instance.GetService<ISerializer>();
         }
 
         private void OnEnable()
@@ -53,29 +60,11 @@ namespace _Project.SaveSystem
 
         private void LoadGame()
         {
-            if (!File.Exists(GetPathString()))
-            {
-                Debug.LogWarning("Save file does not exist.");
-                return;
-            }
-            
-            // TODO: Move this to a separate Serializer/Deserializer class.
-            JsonSerializer jsonSerializer = new JsonSerializer();
-            StreamReader streamReader = new StreamReader(GetPathString());
-            JsonReader reader = new JsonTextReader(streamReader);
-            
-            jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
-                
-            HeadJSONContainer headJSONContainer = jsonSerializer.Deserialize<HeadJSONContainer>(reader);
-            
-            reader.Close();
-            streamReader.Close();
-            
-            LoadedData = new LoadedData(headJSONContainer);
+            LoadedData = _serializer.Deserialize(GetPathString());
 
             foreach (var saveable in _saveables)
             {
-                if (LoadedData.TryGetDataByGUID(saveable.GUIDString, out var data))
+                if (LoadedData.TryGetDataByGUID(saveable.GUID, out var data))
                 {
                     saveable.Load(data);
                 }
@@ -90,42 +79,9 @@ namespace _Project.SaveSystem
 
         private void SaveGame()
         {
-            HeadJSONContainer headJSONContainer = new HeadJSONContainer();
-            
-            foreach (var saveable in _saveables)
-            {
-                var saveDatas = saveable.GetSaveData();
-            
-                SubJSONContainer container = new SubJSONContainer
-                {
-                    GUID = saveable.GUIDString,
-                    SaveableType = saveable.SaveableType,
-                    Data = saveDatas
-                };
-                
-                headJSONContainer.AddSubContainer(container);
-            }
-            
-            JsonSerializer jsonSerializer = new JsonSerializer();
-            StreamWriter streamWriter = new StreamWriter(GetPathString());
-            JsonWriter writer = new JsonTextWriter(streamWriter);
-
-            jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
-            writer.Formatting = Formatting.Indented;
-            
-            jsonSerializer.Serialize(writer, headJSONContainer);
-            
-            writer.Close();
-            streamWriter.Close();
+            bool success = _serializer.Serialize(_saveables, GetPathString());
             
             EventBus.Publish(new SaveGameResponse());
-        }
-
-        private void SaveToFile(string text)
-        {
-            // Currently just overriding the file.
-            // Should probably only override changes.
-            File.WriteAllText(GetPathString(), text);
         }
         
         private static string GetPathString()
