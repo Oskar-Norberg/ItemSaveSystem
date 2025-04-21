@@ -27,7 +27,7 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             }
             
             JsonSerializer jsonSerializer = new JsonSerializer();
-            StreamWriter streamWriter = new StreamWriter(path + FileExtension);
+            StreamWriter streamWriter = new StreamWriter(GetPathString(path));
             JsonWriter writer = new JsonTextWriter(streamWriter);
             
             jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
@@ -43,7 +43,7 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
 
         public ILoadedData Deserialize(string path)
         {
-            if (!File.Exists(path))
+            if (!File.Exists(GetPathString(path)))
             {
                 // TODO: Change this to a TryDeserialize method that returns a bool. (This should return false)
                 return null;
@@ -51,7 +51,7 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             
             // TODO: Move this to a separate Serializer/Deserializer class.
             JsonSerializer jsonSerializer = new JsonSerializer();
-            StreamReader streamReader = new StreamReader(path + FileExtension);
+            StreamReader streamReader = new StreamReader(GetPathString(path));
             JsonReader reader = new JsonTextReader(streamReader);
             
             jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
@@ -62,6 +62,11 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             streamReader.Close();
             
             return new JSONLoadedData(headJSONContainer);
+        }
+        
+        private string GetPathString(string path)
+        {
+            return path + FileExtension;
         }
     }
 }
