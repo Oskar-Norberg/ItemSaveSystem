@@ -21,6 +21,14 @@ namespace _Project.SaveSystem
         // TODO: Don't completely overwrite the file. Append to it instead.
         public void SaveToFile(uint slot, HeadSaveData saveData)
         {
+            // Concatenate the new data with the previous data
+            HeadSaveData previousData = LoadFromFile(slot);
+            // TODO: Add bool check for null
+            if (previousData != null)
+            {
+                saveData += previousData;
+            }
+            
             string serializedOutput = _serializer.Serialize(saveData);
             File.WriteAllText(GetPathString(), serializedOutput);
         }

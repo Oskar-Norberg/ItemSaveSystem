@@ -17,6 +17,13 @@ namespace _Project.SaveSystem.DataLoading.Common
         public HeadSaveData() : this(new List<SubSaveData>())
         {
         }
+
+        public static HeadSaveData operator +(HeadSaveData lh, HeadSaveData rh)
+        {
+            HeadSaveData newHeadSaveData = new HeadSaveData(rh._subContainers);
+            
+            return AddNonPresentSaveData(lh, rh);
+        }
     
         public void AddSubContainer(SubSaveData subContainer)
         {
@@ -43,6 +50,21 @@ namespace _Project.SaveSystem.DataLoading.Common
 
             data = null;
             return false;
+        }
+
+        private static HeadSaveData AddNonPresentSaveData(HeadSaveData lh, HeadSaveData rh)
+        {
+            // TODO: O(N^2)
+            foreach (var rhSubContainer in rh._subContainers)
+            {
+                bool found = lh._subContainers.Exists(subContainer => Equals(subContainer.GUID, rhSubContainer.GUID));
+                if (!found)
+                {
+                    lh._subContainers.Add(rhSubContainer);
+                }
+            }
+
+            return lh;
         }
     }
 }
