@@ -58,6 +58,7 @@ namespace _Project.SaveSystem.DataLoading.Common
             foreach (var rhSubContainer in rh._subContainers)
             {
                 bool found = lh._subContainers.Exists(subContainer => Equals(subContainer.GUID, rhSubContainer.GUID));
+                
                 if (!found)
                 {
                     lh._subContainers.Add(rhSubContainer);

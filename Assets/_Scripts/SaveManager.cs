@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using _Project.SaveSystem.DataLoading.Common;
 using _Project.SaveSystem.Events;
+using _Project.SaveSystem.Interfaces;
 using ringo.EventSystem;
 using ringo.ServiceLocator;
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace _Project.SaveSystem
         private void Start()
         {
             // TODO: Consider moving to service locator.
-            _saveFileService = new SaveFileService();
+            _saveFileService = new SaveFileService(ServiceLocator.Instance.GetService<ISerializer>());
         }
 
         private void OnEnable()

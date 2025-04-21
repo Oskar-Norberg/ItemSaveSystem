@@ -12,9 +12,9 @@ namespace _Project.SaveSystem
         
         private ISerializer _serializer;
         
-        public SaveFileService()
+        public SaveFileService(ISerializer serializer)
         {
-            _serializer = ServiceLocator.Instance.GetService<ISerializer>();
+            _serializer = serializer;
         }
 
         // TODO: Implement save slots
