@@ -19,16 +19,19 @@ namespace _Project.SaveSystem
 
         // TODO: Implement save slots
         // TODO: Don't completely overwrite the file. Append to it instead.
-        public void SaveToFile(uint slot, HeadSaveData saveData)
+        // TODO: Write documentation.
+        public void SaveToFile(uint slot, HeadSaveData saveData, bool overrideSave)
         {
             // Concatenate the new data with the previous data
             HeadSaveData previousData = LoadFromFile(slot);
-            // TODO: Add bool check for null
-            if (previousData != null)
+            if (!overrideSave)
             {
-                saveData += previousData;
+                if (previousData != null)
+                {
+                    saveData += previousData;
+                }
             }
-            
+
             string serializedOutput = _serializer.Serialize(saveData);
             File.WriteAllText(GetPathString(), serializedOutput);
         }

@@ -95,7 +95,7 @@ namespace _Project.SaveSystem
                 headSaveData.AddSubContainer(subSaveData);
             }
             
-            _saveFileService.SaveToFile(0, headSaveData);
+            _saveFileService.SaveToFile(0, headSaveData, true);
             
             EventBus.Publish(new SaveGameResponse());
         }
