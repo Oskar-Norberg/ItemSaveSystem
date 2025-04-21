@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using _Project.SaveSystem.DataLoading.Common;
 using _Project.SaveSystem.Events;
-using _Project.SaveSystem.Interfaces;
 using ringo.EventSystem;
 using ringo.ServiceLocator;
 using UnityEngine;
@@ -10,14 +9,12 @@ namespace _Project.SaveSystem
 {   
     public class SaveManager : MonoBehaviour
     {
-        private const string SaveFileName = "creatively_named_save_file";
-        
         private NoArgumentEventHandler<SaveGameRequest> _saveGameRequestHandler;
         private NoArgumentEventHandler<LoadGameRequest> _loadGameRequestHandler;
         
         private List<Saveable> _saveables = new();
 
-        private ISerializer _serializer;
+        private SaveFileService _saveFileService;
         
         private void Awake()
         {
@@ -28,7 +25,8 @@ namespace _Project.SaveSystem
 
         private void Start()
         {
-            _serializer = ServiceLocator.Instance.GetService<ISerializer>();
+            // TODO: Consider moving to service locator.
+            _saveFileService = new SaveFileService();
         }
 
         private void OnEnable()
@@ -58,10 +56,7 @@ namespace _Project.SaveSystem
 
         private void LoadGame()
         {
-            // TODO: Same as other comment, move to separate service.
-            string serializedData = System.IO.File.ReadAllText(GetPathString());
-            
-            HeadSaveData loadedData = _serializer.Deserialize<HeadSaveData>(serializedData);
+            HeadSaveData loadedData = _saveFileService.LoadFromFile(0);
 
             foreach (var saveable in _saveables)
             {
@@ -93,17 +88,11 @@ namespace _Project.SaveSystem
                 headSaveData.AddSubContainer(subSaveData);
             }
             
-            string serializedOutput = _serializer.Serialize(headSaveData);
-            
-            // TODO: Move to a DataManager/DataService/SaveFileManager wahtever
-            System.IO.File.WriteAllText(GetPathString(), serializedOutput);
+            _saveFileService.SaveToFile(0, headSaveData);
             
             EventBus.Publish(new SaveGameResponse());
         }
         
-        private static string GetPathString()
-        {
-            return Application.persistentDataPath + "/" + SaveFileName;
-        }
+        
     }
 }
