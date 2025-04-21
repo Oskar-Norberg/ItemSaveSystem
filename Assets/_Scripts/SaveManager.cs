@@ -57,6 +57,12 @@ namespace _Project.SaveSystem
         private void LoadGame()
         {
             HeadSaveData loadedData = _saveFileService.LoadFromFile(0);
+            
+            if (loadedData == null)
+            {
+                Debug.LogWarning("No savefile found.");
+                return;
+            }
 
             foreach (var saveable in _saveables)
             {
