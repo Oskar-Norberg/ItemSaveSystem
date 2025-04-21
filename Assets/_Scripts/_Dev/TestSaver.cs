@@ -1,4 +1,3 @@
-using System;
 using _Project.SaveSystem.Interfaces;
 using UnityEngine;
 
@@ -34,17 +33,5 @@ namespace _Project.SaveSystem._Dev
             
             this.testSaveData = testSaveData;
         }
-    }
-    
-    [Serializable]
-    public class TestSaveData : SaveData
-    {
-        public int X, Y, Z;
-    }
-    
-    [Serializable]
-    public class TestSaveData2 : SaveData
-    {
-        public string A, B, C;
     }
 }
