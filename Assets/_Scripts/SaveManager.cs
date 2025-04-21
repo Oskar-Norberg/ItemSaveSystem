@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using _Project.SaveSystem.DataLoading.Common;
 using _Project.SaveSystem.Events;
 using _Project.SaveSystem.Interfaces;
-using _Project.SaveSystem.Interfaces.DataLoading;
 using ringo.EventSystem;
 using ringo.ServiceLocator;
 using UnityEngine;
@@ -10,8 +10,6 @@ namespace _Project.SaveSystem
 {   
     public class SaveManager : MonoBehaviour
     {
-        public ILoadedData LoadedData { get; private set; }
-        
         private const string SaveFileName = "creatively_named_save_file";
         
         private NoArgumentEventHandler<SaveGameRequest> _saveGameRequestHandler;
@@ -60,11 +58,11 @@ namespace _Project.SaveSystem
 
         private void LoadGame()
         {
-            LoadedData = _serializer.Deserialize(GetPathString());
+            HeadSaveData loadedData = _serializer.Deserialize<HeadSaveData>(GetPathString());
 
             foreach (var saveable in _saveables)
             {
-                if (LoadedData.TryGetDataByGUID(saveable.GUID, out var data))
+                if (loadedData.TryGetDataByGUID(saveable.GUID, out var data))
                 {
                     saveable.Load(data);
                 }
@@ -79,7 +77,20 @@ namespace _Project.SaveSystem
 
         private void SaveGame()
         {
-            bool success = _serializer.Serialize(_saveables, GetPathString());
+            HeadSaveData headSaveData = new HeadSaveData();
+            
+            foreach (var saveable in _saveables)
+            {
+                SubSaveData subSaveData = new SubSaveData(
+                    saveable.GUID, 
+                    saveable.SaveableType, 
+                    saveable.GetSaveData()
+                    );
+                
+                headSaveData.AddSubContainer(subSaveData);
+            }
+            
+            bool success = _serializer.Serialize(headSaveData, GetPathString());
             
             EventBus.Publish(new SaveGameResponse());
         }
