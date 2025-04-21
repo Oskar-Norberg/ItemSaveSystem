@@ -58,7 +58,10 @@ namespace _Project.SaveSystem
 
         private void LoadGame()
         {
-            HeadSaveData loadedData = _serializer.Deserialize<HeadSaveData>(GetPathString());
+            // TODO: Same as other comment, move to separate service.
+            string serializedData = System.IO.File.ReadAllText(GetPathString());
+            
+            HeadSaveData loadedData = _serializer.Deserialize<HeadSaveData>(serializedData);
 
             foreach (var saveable in _saveables)
             {
@@ -90,7 +93,10 @@ namespace _Project.SaveSystem
                 headSaveData.AddSubContainer(subSaveData);
             }
             
-            bool success = _serializer.Serialize(headSaveData, GetPathString());
+            string serializedOutput = _serializer.Serialize(headSaveData);
+            
+            // TODO: Move to a DataManager/DataService/SaveFileManager wahtever
+            System.IO.File.WriteAllText(GetPathString(), serializedOutput);
             
             EventBus.Publish(new SaveGameResponse());
         }
