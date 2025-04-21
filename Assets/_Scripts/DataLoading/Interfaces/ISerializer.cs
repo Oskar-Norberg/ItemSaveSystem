@@ -1,3 +1,5 @@
+using _Project.SaveSystem.Interfaces.DataLoading;
+
 namespace _Project.SaveSystem.Interfaces
 {
     public interface ISerializer
@@ -15,6 +17,6 @@ namespace _Project.SaveSystem.Interfaces
          * <param name="path">The path to load the data from. File extensions handled by serializer.</param>
          * <returns>The loaded data.</returns>
          */
-        LoadedData Deserialize(string path);
+        ILoadedData Deserialize(string path);
     }
 }

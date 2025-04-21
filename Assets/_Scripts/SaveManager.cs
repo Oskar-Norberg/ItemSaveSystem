@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using _Project.SaveSystem;
 using _Project.SaveSystem.Events;
 using Newtonsoft.Json;
 using ringo.EventSystem;
@@ -133,58 +132,5 @@ namespace _Project.SaveSystem
         {
             return Application.persistentDataPath + "/" + SaveFileName;
         }
-    }
-}
-
-public class LoadedData
-{
-    // String is the GUID of the saveable.
-    private Dictionary<string, SubJSONContainer> _saveDatas = new();
-
-    public LoadedData(HeadJSONContainer headJsonContainer)
-    {
-        // Populate _saveDatas with all subcontainers.
-        foreach (var subContainer in headJsonContainer.SubContainers)
-        {
-            _saveDatas[subContainer.GUID] = subContainer;
-        }
-    }
-    
-    public bool TryGetDataByGUID(string guid, out Dictionary<string, SaveData> data)
-    {
-        if (_saveDatas.TryGetValue(guid, out var subContainer))
-        {
-            data = subContainer.Data;
-            return true;
-        }
-        
-        data = null;
-        return false;
-    }
-}
-
-[System.Serializable]
-public class HeadJSONContainer
-{
-    public List<SubJSONContainer> SubContainers = new();
-    
-    public void AddSubContainer(SubJSONContainer subContainer)
-    {
-        SubContainers.Add(subContainer);
-    }
-}
-
-[System.Serializable]
-public struct SubJSONContainer
-{
-    public string GUID;
-    public SaveableType SaveableType;
-    public Dictionary<string, SaveData> Data;
-
-    public SubJSONContainer(string guid, SaveableType saveableType, Dictionary<string, SaveData> data)
-    {
-        GUID = guid;
-        Data = data;
-        SaveableType = saveableType;
     }
 }
