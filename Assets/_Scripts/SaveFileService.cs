@@ -23,9 +23,11 @@ namespace _Project.SaveSystem
         public void SaveToFile(uint slot, HeadSaveData saveData, bool overrideSave)
         {
             // Concatenate the new data with the previous data
-            HeadSaveData previousData = LoadFromFile(slot);
             if (!overrideSave)
             {
+                HeadSaveData previousData = LoadFromFile(slot);
+                
+                // TODO: Add error-checking for if the file doesn't exist or is invalid. If this happens, copy the previous data to a backup-file with date as name.
                 if (previousData != null)
                 {
                     saveData += previousData;

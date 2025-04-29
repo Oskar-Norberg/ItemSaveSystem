@@ -6,7 +6,6 @@ namespace _Project.SaveSystem.DataLoading.Common
     [System.Serializable]
     public class HeadSaveData : ILoadedData
     {
-        // TODO: Will this be serialized if private?
         public List<SubSaveData> _subContainers;
         
         public HeadSaveData(List<SubSaveData> saveDatas)
@@ -32,6 +31,7 @@ namespace _Project.SaveSystem.DataLoading.Common
 
         public bool TryGetDataByGUID(SerializableGuid guid, out Dictionary<string, SaveData> data)
         {
+            // TODO: This should just be a dictionary.
             // O(N) for each lookup, really really slow.
             foreach (var container in _subContainers)
             {
