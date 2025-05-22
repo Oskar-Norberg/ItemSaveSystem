@@ -33,13 +33,22 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             JsonReader reader = new JsonTextReader(stringReader);
             
             jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
+
+            try
+            {
+                T deserializedObject = jsonSerializer.Deserialize<T>(reader);
                 
-            T deserializedObject = jsonSerializer.Deserialize<T>(reader);
-            
-            reader.Close();
-            stringReader.Close();
-            
-            return deserializedObject;
+                return deserializedObject;
+            }
+            catch (JsonReaderException e)
+            {
+                throw new InvalidDataException("Invalid data format.", e);
+            }
+            finally
+            {
+                reader.Close();
+                stringReader.Close();
+            }
         }
     }
 }
