@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using _Project.SaveSystem.DataLoading.Common;
-using _Project.SaveSystem.Events;
 using _Project.SaveSystem.Interfaces;
-using ringo.EventSystem;
 using ringo.ServiceLocator;
 using UnityEngine;
 
@@ -61,8 +59,6 @@ namespace _Project.SaveSystem
                     Debug.LogWarning($"Saveable {saveable.GUIDString} not found in loaded data.");
                 }
             }
-            
-            EventBus.Publish(new LoadGameResponse());
         }
 
         public void SaveGame(string fileName)
@@ -81,8 +77,6 @@ namespace _Project.SaveSystem
             }
             
             _saveFileService.SaveToFile( headSaveData, fileName, true);
-            
-            EventBus.Publish(new SaveGameResponse());
         }
     }
 }

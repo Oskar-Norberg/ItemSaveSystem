@@ -1,21 +1,36 @@
-using _Project.SaveSystem.Events;
-using ringo.EventSystem;
+using ringo.ServiceLocator;
 using UnityEngine;
 
 namespace _Project.SaveSystem.SaveGameEventSender
 {
     public class SaveGameEventSender : MonoBehaviour
     {
+        [SerializeField] private string saveFileName = "TheData";
+        
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                EventBus.Publish(new SaveGameRequest());
+                var saveManager = ServiceLocator.Instance.GetService<SaveManager>();
+                
+                if (saveManager == null)
+                {
+                    Debug.LogError("SaveManager not found in ServiceLocator.");
+                    return;
+                }
+                saveManager.SaveGame(saveFileName);
             }
             
             if (Input.GetKeyDown(KeyCode.L))
             {
-                EventBus.Publish(new LoadGameRequest());
+                var saveManager = ServiceLocator.Instance.GetService<SaveManager>();
+                
+                if (saveManager == null)
+                {
+                    Debug.LogError("SaveManager not found in ServiceLocator.");
+                    return;
+                }
+                saveManager.LoadGame(saveFileName);
             }
         }
     }
