@@ -7,12 +7,10 @@ using ringo.ServiceLocator;
 using UnityEngine;
 
 namespace _Project.SaveSystem
-{   
+{
+    // TODO: Consider decoupling this class from the EventBus and ServiceLocator entirely. Having this as either a singleton or a static class might be better.
     public class SaveManager : MonoBehaviour
     {
-        private NoArgumentEventHandler<SaveGameRequest> _saveGameRequestHandler;
-        private NoArgumentEventHandler<LoadGameRequest> _loadGameRequestHandler;
-        
         private List<Saveable> _saveables = new();
 
         private SaveFileService _saveFileService;
@@ -20,26 +18,13 @@ namespace _Project.SaveSystem
         private void Awake()
         {
             ServiceLocator.Instance.Register<SaveManager>(this);
-            _saveGameRequestHandler = new NoArgumentEventHandler<SaveGameRequest>(SaveGame);
-            _loadGameRequestHandler = new NoArgumentEventHandler<LoadGameRequest>(LoadGame);
         }
 
         private void Start()
         {
             // TODO: Consider moving to service locator.
+            
             _saveFileService = new SaveFileService(ServiceLocator.Instance.GetService<ISerializer>());
-        }
-
-        private void OnEnable()
-        {
-            _saveGameRequestHandler.Activate();
-            _loadGameRequestHandler.Activate();
-        }
-
-        private void OnDisable()
-        {
-            _saveGameRequestHandler.Deactivate();
-            _loadGameRequestHandler.Deactivate();
         }
 
         public void BindSaveable(Saveable saveable)
@@ -55,9 +40,9 @@ namespace _Project.SaveSystem
             }
         }
 
-        private void LoadGame()
+        public void LoadGame(string fileName)
         {
-            HeadSaveData loadedData = _saveFileService.LoadFromFile(0);
+            HeadSaveData loadedData = _saveFileService.LoadFromFile(fileName);
             
             if (loadedData == null)
             {
@@ -80,7 +65,7 @@ namespace _Project.SaveSystem
             EventBus.Publish(new LoadGameResponse());
         }
 
-        private void SaveGame()
+        public void SaveGame(string fileName)
         {
             HeadSaveData headSaveData = new HeadSaveData();
             
@@ -95,11 +80,9 @@ namespace _Project.SaveSystem
                 headSaveData.AddSubContainer(subSaveData);
             }
             
-            _saveFileService.SaveToFile(0, headSaveData, true);
+            _saveFileService.SaveToFile( headSaveData, fileName, true);
             
             EventBus.Publish(new SaveGameResponse());
         }
-        
-        
     }
 }
