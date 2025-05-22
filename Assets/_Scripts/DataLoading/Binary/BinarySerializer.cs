@@ -5,6 +5,7 @@ using _Project.SaveSystem.Interfaces;
 
 namespace _Project.SaveSystem.DataLoading.Binary
 {
+    // TODO: Implement error checking. See JSONSerializer for example.
     public class BinarySerializer : ISerializer
     {
         public string Serialize(object objectToSerialize)

@@ -21,7 +21,6 @@ namespace _Project.SaveSystem
         private void Start()
         {
             // TODO: Consider moving to service locator.
-            
             _saveFileService = new SaveFileService(ServiceLocator.Instance.GetService<ISerializer>());
         }
 

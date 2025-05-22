@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace _Project.SaveSystem
 {
+    // TODO: Add file extension to file name.
     public class SaveFileService
     {
         private ISerializer _serializer;
@@ -28,6 +29,7 @@ namespace _Project.SaveSystem
                     // TODO: Add error-checking for if the file doesn't exist or is invalid. If this happens, copy the previous data to a backup-file with date as name.
                     if (previousData != null)
                     {
+                        // TODO: Should this be a .Merge() function instead? Arithmetic operators on complex types are unintuitive.
                         saveData += previousData;
                     }
                 }
@@ -39,21 +41,23 @@ namespace _Project.SaveSystem
                 {
                     // Old Save was invalid, so backup old save and create a new one in its place.
                     Debug.LogError("Invalid Save.");
-                    
+
                     string backupFileName = $"{fileName}_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.backup";
                     File.Copy(GetPathString(fileName), GetPathString(backupFileName));
                 }
+                finally
+                {
+                    string serializedOutput = _serializer.Serialize(saveData);
+                    File.WriteAllText(GetPathString(fileName), serializedOutput);
+                }
             }
-
-            string serializedOutput = _serializer.Serialize(saveData);
-            File.WriteAllText(GetPathString(fileName), serializedOutput);
         }
 
         public HeadSaveData LoadFromFile(string fileName)
         {
             if (!File.Exists(GetPathString(fileName)))
             {
-                throw new FileNotFoundException($"Save file {fileName} does not exist.");
+                throw new SaveNotFoundException($"Save file {fileName} does not exist.");
             }
             
             string serializedData = File.ReadAllText(GetPathString(fileName));
