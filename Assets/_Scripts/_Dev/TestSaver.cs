@@ -10,11 +10,8 @@ namespace _Project.SaveSystem._Dev
 
         private void Start()
         {
-            if (testSaveData == null)
-            {
-                testSaveData = new TestSaveData();
-            }
-            
+            testSaveData ??= new TestSaveData();
+
             GetComponent<Saveable>().Bind("TestData", this);
         }
         

@@ -44,7 +44,7 @@ namespace _Project.SaveSystem
             
             if (loadedData == null)
             {
-                Debug.LogWarning("No savefile found.");
+                Debug.LogWarning($"Save file {fileName} does not exist.");
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace _Project.SaveSystem
                 }
                 else
                 {
-                    Debug.LogWarning($"Saveable {saveable.GUIDString} not found in loaded data.");
+                    Debug.Log($"Saveable {saveable.GUIDString} not found in loaded data.");
                 }
             }
         }
