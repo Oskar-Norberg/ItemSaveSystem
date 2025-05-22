@@ -45,12 +45,10 @@ namespace _Project.SaveSystem
                     string backupFileName = $"{fileName}_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.backup";
                     File.Copy(GetPathString(fileName), GetPathString(backupFileName));
                 }
-                finally
-                {
-                    string serializedOutput = _serializer.Serialize(saveData);
-                    File.WriteAllText(GetPathString(fileName), serializedOutput);
-                }
             }
+            
+            string serializedOutput = _serializer.Serialize(saveData);
+            File.WriteAllText(GetPathString(fileName), serializedOutput);
         }
 
         public HeadSaveData LoadFromFile(string fileName)
