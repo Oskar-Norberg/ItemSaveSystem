@@ -61,7 +61,7 @@ namespace _Project.SaveSystem
             }
         }
 
-        public void SaveGame(string fileName)
+        public void SaveGame(string fileName, bool overrideSave = false)
         {
             HeadSaveData headSaveData = new HeadSaveData();
             
@@ -76,7 +76,7 @@ namespace _Project.SaveSystem
                 headSaveData.AddSubContainer(subSaveData);
             }
             
-            _saveFileService.SaveToFile( headSaveData, fileName, true);
+            _saveFileService.SaveToFile( headSaveData, fileName, overrideSave);
         }
     }
 }

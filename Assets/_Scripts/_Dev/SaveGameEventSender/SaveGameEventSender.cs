@@ -6,6 +6,7 @@ namespace _Project.SaveSystem.SaveGameEventSender
     public class SaveGameEventSender : MonoBehaviour
     {
         [SerializeField] private string saveFileName = "TheData";
+        [SerializeField] private bool overrideSave = false;
         
         private void Update()
         {
@@ -18,7 +19,7 @@ namespace _Project.SaveSystem.SaveGameEventSender
                     Debug.LogError("SaveManager not found in ServiceLocator.");
                     return;
                 }
-                saveManager.SaveGame(saveFileName);
+                saveManager.SaveGame(saveFileName, overrideSave);
             }
             
             if (Input.GetKeyDown(KeyCode.L))

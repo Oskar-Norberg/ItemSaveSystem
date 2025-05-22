@@ -23,7 +23,7 @@ namespace _Project.SaveSystem
             {
                 try
                 {
-                    HeadSaveData previousData = LoadFromFile(fileName);
+                    HeadSaveData previousData = LoadFromFile(GetPathString(fileName));
 
                     // TODO: Add error-checking for if the file doesn't exist or is invalid. If this happens, copy the previous data to a backup-file with date as name.
                     if (previousData != null)
@@ -37,8 +37,11 @@ namespace _Project.SaveSystem
                 }
                 catch (InvalidSaveException)
                 {
-                    Debug.LogError("Save file not found, creating new one.");
-                    // TODO: back up the file with a date as name.
+                    // Old Save was invalid, so backup old save and create a new one in its place.
+                    Debug.LogError("Invalid Save.");
+                    
+                    string backupFileName = $"{fileName}_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.backup";
+                    File.Copy(GetPathString(fileName), GetPathString(backupFileName));
                 }
             }
 
