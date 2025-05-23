@@ -7,13 +7,9 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
     {
         public string Serialize(object objectToSerialize)
         {
-            // TOOD: Factory method to create the correct JSONContainer.
-            JsonSerializer jsonSerializer = new JsonSerializer();
-            StringWriter stringWriter = new StringWriter();
-            JsonWriter writer = new JsonTextWriter(stringWriter);
-            
-            jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
-            writer.Formatting = Formatting.Indented;
+            JsonSerializer jsonSerializer = CreateJSONSerializer();
+            StringWriter stringWriter = CreateStringWriter();
+            JsonWriter writer = CreateJSONWriter(stringWriter);
             
             jsonSerializer.Serialize(writer, objectToSerialize);
             
@@ -27,13 +23,10 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
         
         public T Deserialize<T>(string serializedObject)
         {
-            // TODO: Same as other todo. Please create a factory method to save settings.
-            JsonSerializer jsonSerializer = new JsonSerializer();
-            StringReader stringReader = new StringReader(serializedObject);
-            JsonReader reader = new JsonTextReader(stringReader);
+            JsonSerializer jsonSerializer = CreateJSONSerializer();
+            StringReader stringReader = CreateStringReader(serializedObject);
+            JsonReader reader = CreateJSONReader(stringReader);
             
-            jsonSerializer.TypeNameHandling = TypeNameHandling.Objects;
-
             try
             {
                 T deserializedObject = jsonSerializer.Deserialize<T>(reader);
@@ -49,6 +42,44 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
                 reader.Close();
                 stringReader.Close();
             }
+        }
+        
+        private Newtonsoft.Json.JsonSerializer CreateJSONSerializer()
+        {
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Objects,
+                Formatting = Formatting.Indented
+            };
+            
+            var jsonSerializer = JsonSerializer.Create(settings);
+            
+            return jsonSerializer;
+        }
+        
+        private JsonWriter CreateJSONWriter(StringWriter stringWriter)
+        {
+            var jsonTextWriter = new JsonTextWriter(stringWriter)
+            {
+                Formatting = Formatting.Indented
+            };
+            return jsonTextWriter;
+        }
+        
+        private JsonReader CreateJSONReader(StringReader stringReader)
+        {
+            var jsonTextReader = new JsonTextReader(stringReader);
+            return jsonTextReader;
+        }
+
+        private StringWriter CreateStringWriter()
+        {
+            return new StringWriter();
+        }
+
+        private StringReader CreateStringReader(string serializedString)
+        {
+            return new StringReader(serializedString);
         }
     }
 }

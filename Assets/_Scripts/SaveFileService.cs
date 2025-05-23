@@ -6,10 +6,9 @@ using UnityEngine;
 
 namespace _Project.SaveSystem
 {
-    // TODO: Add file extension to file name.
     public class SaveFileService
     {
-        private ISerializer _serializer;
+        private readonly ISerializer _serializer;
         
         public SaveFileService(ISerializer serializer)
         {
@@ -26,7 +25,6 @@ namespace _Project.SaveSystem
                 {
                     HeadSaveData previousData = LoadFromFile(GetPathString(fileName));
 
-                    // TODO: Add error-checking for if the file doesn't exist or is invalid. If this happens, copy the previous data to a backup-file with date as name.
                     if (previousData != null)
                     {
                         // TODO: Should this be a .Merge() function instead? Arithmetic operators on complex types are unintuitive.

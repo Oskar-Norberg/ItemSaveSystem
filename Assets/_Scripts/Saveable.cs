@@ -27,7 +27,6 @@ namespace _Project.SaveSystem
         {
             _monoSerializableGuid = GetComponent<MonoSerializableGuid>();
             
-            // TODO: Unbind on destroy.
             ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
             
             PostAwakeErrorChecking();
