@@ -67,8 +67,7 @@ namespace _Project.SaveSystem
             foreach (var saveable in _saveables)
             {
                 SubSaveData subSaveData = new SubSaveData(
-                    saveable.GUID, 
-                    saveable.SaveableType, 
+                    saveable.GUID,
                     saveable.GetSaveData()
                     );
                 

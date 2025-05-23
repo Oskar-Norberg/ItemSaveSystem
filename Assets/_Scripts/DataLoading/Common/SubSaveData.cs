@@ -6,14 +6,12 @@ namespace _Project.SaveSystem.DataLoading.Common
     public class SubSaveData
     {
         public SerializableGuid GUID;
-        public SaveableType SaveableType;
         public Dictionary<string, SaveData> Data;
 
-        public SubSaveData(SerializableGuid guid, SaveableType saveableType, Dictionary<string, SaveData> data)
+        public SubSaveData(SerializableGuid guid, Dictionary<string, SaveData> data)
         {
             GUID = guid;
             Data = data;
-            SaveableType = saveableType;
         }
     }
 }

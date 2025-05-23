@@ -11,12 +11,8 @@ namespace _Project.SaveSystem
     [RequireComponent(typeof(MonoSerializableGuid))]
     public class Saveable : MonoBehaviour, IGUIDHolder
     {
-        public SaveableType SaveableType => saveableType;
-
         public string GUIDString => _monoSerializableGuid.GUIDString;
         public SerializableGuid GUID => _monoSerializableGuid.GUID;
-        
-        [SerializeField] private SaveableType saveableType;
         
         // String is name of bond.
         private Dictionary<string, IBindable> _bonds = new();
