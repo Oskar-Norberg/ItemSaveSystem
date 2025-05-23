@@ -40,12 +40,12 @@ namespace _Project.SaveSystem
                 
                 if (monoGuid == this)
                     continue;
+
+                if (!Equals(monoGuid.guid, guid)) 
+                    continue;
                 
-                if (monoGuid.guid == guid)
-                {
-                    Debug.Log("Duplicate GUID found.");
-                    return true;
-                }
+                Debug.Log("Duplicate GUID found.");
+                return true;
             }
 
             return false;
