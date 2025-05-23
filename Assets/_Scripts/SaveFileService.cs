@@ -28,7 +28,7 @@ namespace _Project.SaveSystem
                     if (previousData != null)
                     {
                         // TODO: Should this be a .Merge() function instead? Arithmetic operators on complex types are unintuitive.
-                        saveData += previousData;
+                        saveData = HeadSaveData.Merge(saveData, previousData);
                     }
                 }
                 catch (SaveNotFoundException)
