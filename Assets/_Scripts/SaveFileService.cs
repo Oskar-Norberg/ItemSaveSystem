@@ -71,6 +71,11 @@ namespace _Project.SaveSystem
             }
         }
         
+        public bool SaveFileExists(string fileName)
+        {
+            return File.Exists(GetPathString(fileName));
+        }
+        
         private string GetPathString(string fileName)
         {
             return Path.Combine(Application.persistentDataPath, fileName);

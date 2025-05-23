@@ -77,5 +77,10 @@ namespace _Project.SaveSystem
             
             _saveFileService.SaveToFile( headSaveData, fileName, overrideSave);
         }
+        
+        public bool SaveFileExists(string fileName)
+        {
+            return _saveFileService.SaveFileExists(fileName);
+        }
     }
 }
