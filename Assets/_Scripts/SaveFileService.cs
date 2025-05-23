@@ -40,7 +40,7 @@ namespace _Project.SaveSystem
                 catch (InvalidSaveException)
                 {
                     // Old Save was invalid, so backup old save and create a new one in its place.
-                    Debug.LogError("Invalid Save.");
+                    Debug.LogError("Invalid save. Backing up old one and overriding.");
 
                     string backupFileName = $"{fileName}_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.backup";
                     File.Copy(GetPathString(fileName), GetPathString(backupFileName));
@@ -51,6 +51,7 @@ namespace _Project.SaveSystem
             File.WriteAllText(GetPathString(fileName), serializedOutput);
         }
 
+        // TODO: Consider if this should be a TryLoad function rather than throwing an exception.
         public HeadSaveData LoadFromFile(string fileName)
         {
             if (!File.Exists(GetPathString(fileName)))
