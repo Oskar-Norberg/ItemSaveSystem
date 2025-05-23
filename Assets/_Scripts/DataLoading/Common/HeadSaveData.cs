@@ -51,15 +51,22 @@ namespace _Project.SaveSystem.DataLoading.Common
             data = null;
             return false;
         }
-
+        
         private static HeadSaveData AddNonPresentSaveData(HeadSaveData lh, HeadSaveData rh)
         {
-            // TODO: O(N^2)
+            // Load all lh sub containers into HashSet.
+            HashSet<SerializableGuid> lhGuids = new();
+            foreach (var subSaveData in lh._subContainers)
+            {
+                lhGuids.Add(subSaveData.GUID);
+            }
+            
+            // Add all rh sub containers that are not already in lh.
             foreach (var rhSubContainer in rh._subContainers)
             {
-                bool found = lh._subContainers.Exists(subContainer => Equals(subContainer.GUID, rhSubContainer.GUID));
+                bool alreadyExists = lhGuids.Contains(rhSubContainer.GUID);
                 
-                if (!found)
+                if (!alreadyExists)
                 {
                     lh._subContainers.Add(rhSubContainer);
                 }
