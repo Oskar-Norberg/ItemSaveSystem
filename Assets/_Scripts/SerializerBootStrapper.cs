@@ -1,3 +1,4 @@
+using _Project.SaveSystem.DataLoading.Binary;
 using _Project.SaveSystem.Interfaces;
 using _Project.SaveSystem.Interfaces.DataLoading.JSON;
 using ringo.ServiceLocator;
@@ -10,6 +11,7 @@ namespace _Project.SaveSystem
         enum SerializerType
         {
             JSON,
+            Binary,
         }
         
         [SerializeField] private SerializerType serializerType;
@@ -18,6 +20,9 @@ namespace _Project.SaveSystem
         {
             switch (serializerType)
             {
+                case SerializerType.Binary:
+                    ServiceLocator.Instance.Register<ISerializer>(new BinarySerializer());
+                    break;
                 // Default fallback to JSON.
                 default:
                 case SerializerType.JSON:

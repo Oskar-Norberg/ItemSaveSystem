@@ -1,46 +1,27 @@
 using System.Collections.Generic;
 using _Project.SaveSystem.DataLoading.Common;
-using _Project.SaveSystem.Events;
 using _Project.SaveSystem.Interfaces;
-using ringo.EventSystem;
 using ringo.ServiceLocator;
 using UnityEngine;
 
 namespace _Project.SaveSystem
-{   
+{
+    // TODO: Consider decoupling this class from the EventBus and ServiceLocator entirely. Having this as either a singleton or a static class might be better.
     public class SaveManager : MonoBehaviour
     {
-        private const string SaveFileName = "creatively_named_save_file";
-        
-        private NoArgumentEventHandler<SaveGameRequest> _saveGameRequestHandler;
-        private NoArgumentEventHandler<LoadGameRequest> _loadGameRequestHandler;
-        
         private List<Saveable> _saveables = new();
 
-        private ISerializer _serializer;
+        private SaveFileService _saveFileService;
         
         private void Awake()
         {
             ServiceLocator.Instance.Register<SaveManager>(this);
-            _saveGameRequestHandler = new NoArgumentEventHandler<SaveGameRequest>(SaveGame);
-            _loadGameRequestHandler = new NoArgumentEventHandler<LoadGameRequest>(LoadGame);
         }
 
         private void Start()
         {
-            _serializer = ServiceLocator.Instance.GetService<ISerializer>();
-        }
-
-        private void OnEnable()
-        {
-            _saveGameRequestHandler.Activate();
-            _loadGameRequestHandler.Activate();
-        }
-
-        private void OnDisable()
-        {
-            _saveGameRequestHandler.Deactivate();
-            _loadGameRequestHandler.Deactivate();
+            // TODO: Consider moving to service locator.
+            _saveFileService = new SaveFileService(ServiceLocator.Instance.GetService<ISerializer>());
         }
 
         public void BindSaveable(Saveable saveable)
@@ -56,12 +37,15 @@ namespace _Project.SaveSystem
             }
         }
 
-        private void LoadGame()
+        public void LoadGame(string fileName)
         {
-            // TODO: Same as other comment, move to separate service.
-            string serializedData = System.IO.File.ReadAllText(GetPathString());
+            HeadSaveData loadedData = _saveFileService.LoadFromFile(fileName);
             
-            HeadSaveData loadedData = _serializer.Deserialize<HeadSaveData>(serializedData);
+            if (loadedData == null)
+            {
+                Debug.LogWarning($"Save file {fileName} does not exist.");
+                return;
+            }
 
             foreach (var saveable in _saveables)
             {
@@ -71,39 +55,31 @@ namespace _Project.SaveSystem
                 }
                 else
                 {
-                    Debug.LogWarning($"Saveable {saveable.GUIDString} not found in loaded data.");
+                    Debug.Log($"Saveable {saveable.GUIDString} not found in loaded data.");
                 }
             }
-            
-            EventBus.Publish(new LoadGameResponse());
         }
 
-        private void SaveGame()
+        public void SaveGame(string fileName, bool overrideSave = false)
         {
             HeadSaveData headSaveData = new HeadSaveData();
             
             foreach (var saveable in _saveables)
             {
                 SubSaveData subSaveData = new SubSaveData(
-                    saveable.GUID, 
-                    saveable.SaveableType, 
+                    saveable.GUID,
                     saveable.GetSaveData()
                     );
                 
                 headSaveData.AddSubContainer(subSaveData);
             }
             
-            string serializedOutput = _serializer.Serialize(headSaveData);
-            
-            // TODO: Move to a DataManager/DataService/SaveFileManager wahtever
-            System.IO.File.WriteAllText(GetPathString(), serializedOutput);
-            
-            EventBus.Publish(new SaveGameResponse());
+            _saveFileService.SaveToFile( headSaveData, fileName, overrideSave);
         }
         
-        private static string GetPathString()
+        public bool SaveFileExists(string fileName)
         {
-            return Application.persistentDataPath + "/" + SaveFileName;
+            return _saveFileService.SaveFileExists(fileName);
         }
     }
 }

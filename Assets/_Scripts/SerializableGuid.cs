@@ -6,6 +6,7 @@ namespace _Project.SaveSystem
     public class SerializableGuid
     {
         // TODO: Why is this a string? Why not a Guid?
+        // TODO: Readonly?
         public string GuidString;
         
         public SerializableGuid()
@@ -23,6 +24,7 @@ namespace _Project.SaveSystem
             return !string.IsNullOrEmpty(serializableGuid.GuidString);
         }
 
+        // TODO: Expensive string comparison.
         public override bool Equals(object obj)
         {
             if (obj is SerializableGuid serializableGuid)
