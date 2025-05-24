@@ -26,6 +26,8 @@ namespace _Project.SaveSystem.Editor.CustomEditors
                 OnTargetChanged();
             }
 
+            HasPrefabOverride();
+
             ShowCurrentGUID();
             SetGUID();
             ResetGUID();
@@ -47,6 +49,35 @@ namespace _Project.SaveSystem.Editor.CustomEditors
         {
             _newGuidString = _currentTarget.GUIDString;
         }
+
+        private void HasPrefabOverride()
+        {
+            // Not a part of a prefab.
+            if (!PrefabUtility.IsPartOfAnyPrefab(_currentTarget))
+                return;
+            
+            var modifications = PrefabUtility.GetPropertyModifications(_currentTarget);
+            
+            bool guidModified = false;
+            
+            if (modifications != null && modifications.Length > 0)
+            {
+                foreach (var modification in modifications)
+                {
+                    if (modification.propertyPath.Contains("guid") || modification.propertyPath.Contains("GUID"))
+                        guidModified = true;
+                }
+            }
+            
+            if (guidModified)
+            {
+                EditorGUILayout.HelpBox("GUID differs from prefab.", MessageType.Warning);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("GUID has not been changed from prefab.", MessageType.Warning);
+            }
+        }
         
         private void ShowCurrentGUID()
         {
@@ -61,7 +92,6 @@ namespace _Project.SaveSystem.Editor.CustomEditors
                 _newGuidString = System.Guid.NewGuid().ToString();
             }
             
-            // TODO: validate guid format.
             _newGuidString = EditorGUILayout.TextField("Set GUID", _newGuidString);
             
             if (GUILayout.Button("Set GUID"))
@@ -74,7 +104,7 @@ namespace _Project.SaveSystem.Editor.CustomEditors
 
         private void ResetGUID()
         {
-            if (GUILayout.Button("Reset GUID"))
+            if (GUILayout.Button("Generate new GUID"))
             {
                 var monoSerializableGuid = _currentTarget;
                 monoSerializableGuid.Reset();

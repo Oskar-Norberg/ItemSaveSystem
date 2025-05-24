@@ -408,7 +408,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &6031245697006675535
+--- !u!1001 &1690280184
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -418,7 +418,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 826808643246456822, guid: 3465c001dd3b76d408dce3eb68d8852c, type: 3}
       propertyPath: m_Name
-      value: TestSaveObject
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5360962090801115883, guid: 3465c001dd3b76d408dce3eb68d8852c, type: 3}
+      propertyPath: guid.GuidString
+      value: 83c5b64d-90b4-4bb9-9571-e0a79a93b0cb
       objectReference: {fileID: 0}
     - target: {fileID: 6685536508902638593, guid: 3465c001dd3b76d408dce3eb68d8852c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -471,5 +475,5 @@ SceneRoots:
   m_Roots:
   - {fileID: 1493694934}
   - {fileID: 462355112}
-  - {fileID: 6031245697006675535}
+  - {fileID: 1690280184}
   - {fileID: 831394324}

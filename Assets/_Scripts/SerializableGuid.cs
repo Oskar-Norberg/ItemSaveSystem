@@ -16,7 +16,6 @@ namespace _Project.SaveSystem
         
         public SerializableGuid(string guidString)
         {
-            // TODO: Validate the string format.
             if (string.IsNullOrEmpty(guidString))
             {
                 throw new ArgumentException("Guid string cannot be null or empty.", nameof(guidString));
