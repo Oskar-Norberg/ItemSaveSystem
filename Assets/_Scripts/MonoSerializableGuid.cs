@@ -13,7 +13,17 @@ namespace _Project.SaveSystem
         private void Awake()
         {
             if (!guid)
-                guid = new SerializableGuid();
+                Reset();
+        }
+
+        public void Reset()
+        {
+            guid = new SerializableGuid();
+        }
+        
+        public void SetGUID(string guidString)
+        {
+            guid = new SerializableGuid(guidString);
         }
         
 #if UNITY_EDITOR

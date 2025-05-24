@@ -13,6 +13,16 @@ namespace _Project.SaveSystem
         {
             GuidString = Guid.NewGuid().ToString();
         }
+        
+        public SerializableGuid(string guidString)
+        {
+            if (string.IsNullOrEmpty(guidString))
+            {
+                throw new ArgumentException("Guid string cannot be null or empty.", nameof(guidString));
+            }
+            
+            GuidString = guidString;
+        }
 
         public static implicit operator bool(SerializableGuid serializableGuid)
         {
