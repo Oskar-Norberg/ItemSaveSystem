@@ -21,6 +21,11 @@ namespace _Project.SaveSystem
             guid = new SerializableGuid();
         }
         
+        public void SetGUID(string guidString)
+        {
+            guid = new SerializableGuid(guidString);
+        }
+        
 #if UNITY_EDITOR
         private void OnValidate()
         {
