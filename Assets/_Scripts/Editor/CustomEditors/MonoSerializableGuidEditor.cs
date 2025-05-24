@@ -71,11 +71,11 @@ namespace _Project.SaveSystem.Editor.CustomEditors
             
             if (guidModified)
             {
-                EditorGUILayout.HelpBox("GUID differs from prefab.", MessageType.Warning);
+                EditorGUILayout.HelpBox("GUID differs from prefab.", MessageType.Info);
             }
             else
             {
-                EditorGUILayout.HelpBox("GUID has not been changed from prefab.", MessageType.Warning);
+                EditorGUILayout.HelpBox("GUID has not been changed from prefab.", MessageType.Info);
             }
         }
         
