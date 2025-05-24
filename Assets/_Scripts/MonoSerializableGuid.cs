@@ -39,24 +39,24 @@ namespace _Project.SaveSystem
 
         private bool IsDuplicate()
         {
-            var monoGuidObjects = FindObjectsByType(typeof(MonoSerializableGuid), FindObjectsInactive.Include, FindObjectsSortMode.None);
-
-            foreach (var monoGuidObject in monoGuidObjects)
-            {
-                var monoGuid = monoGuidObject as MonoSerializableGuid;
-                
-                if (!monoGuid)
-                    continue;
-                
-                if (monoGuid == this)
-                    continue;
-
-                if (!Equals(monoGuid.guid, guid)) 
-                    continue;
-                
-                Debug.Log("Duplicate GUID found.");
-                return true;
-            }
+            // var monoGuidObjects = FindObjectsByType(typeof(MonoSerializableGuid), FindObjectsInactive.Include, FindObjectsSortMode.None);
+            //
+            // foreach (var monoGuidObject in monoGuidObjects)
+            // {
+            //     var monoGuid = monoGuidObject as MonoSerializableGuid;
+            //     
+            //     if (!monoGuid)
+            //         continue;
+            //     
+            //     if (monoGuid == this)
+            //         continue;
+            //
+            //     if (!Equals(monoGuid.guid, guid)) 
+            //         continue;
+            //     
+            //     Debug.Log("Duplicate GUID found.");
+            //     return true;
+            // }
 
             return false;
         }

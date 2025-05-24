@@ -27,6 +27,7 @@ namespace _Project.SaveSystem.Editor.CustomEditors
             }
 
             HasPrefabOverride();
+            IsDuplicate();
 
             ShowCurrentGUID();
             SetGUID();
@@ -77,6 +78,35 @@ namespace _Project.SaveSystem.Editor.CustomEditors
             {
                 EditorGUILayout.HelpBox("GUID has not been changed from prefab.", MessageType.Info);
             }
+        }
+
+        private void IsDuplicate()
+        {
+            bool isDuplicate = false;
+            
+            var monoGuidObjects = FindObjectsByType(typeof(MonoSerializableGuid), FindObjectsInactive.Include, FindObjectsSortMode.None);
+            
+            foreach (var monoGuidObject in monoGuidObjects)
+            {
+                var monoGuid = monoGuidObject as MonoSerializableGuid;
+                
+                if (!monoGuid)
+                    continue;
+                
+                if (monoGuid == _currentTarget)
+                    continue;
+            
+                if (!Equals(monoGuid.GUID, _currentTarget.GUID)) 
+                    continue;
+                
+                isDuplicate = true;;
+            }
+            
+            if (isDuplicate)
+            {
+                EditorGUILayout.HelpBox("This GUID is a duplicate of another ID in this scene. Ignore if this is intended.", MessageType.Info);
+            }
+
         }
         
         private void ShowCurrentGUID()
