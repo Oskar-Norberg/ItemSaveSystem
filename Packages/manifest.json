@@ -3,7 +3,7 @@
     "com.ringo.event-bus": "https://github.com/Oskar-Norberg/Unity-EventBus.git",
     "com.ringo.scene-manager": "https://github.com/Oskar-Norberg/Unity-SceneManager.git",
     "com.ringo.service-locator": "https://github.com/Oskar-Norberg/Unity-ServiceLocator.git",
-    "com.singularitygroup.hotreload": "git+https://gitlab.hotreload.net/root/hot-reload-releases.git#1.13.6",
+    "com.singularitygroup.hotreload": "git+https://gitlab.hotreload.net/root/hot-reload-releases.git#1.13.7",
     "com.unity.ai.navigation": "2.0.5",
     "com.unity.collab-proxy": "2.7.1",
     "com.unity.ide.rider": "3.0.31",
