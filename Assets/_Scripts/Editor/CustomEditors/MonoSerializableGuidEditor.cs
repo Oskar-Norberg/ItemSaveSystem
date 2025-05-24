@@ -106,13 +106,12 @@ namespace _Project.SaveSystem.Editor.CustomEditors
         {
             if (GUILayout.Button("Generate new GUID"))
             {
-                var monoSerializableGuid = _currentTarget;
-                monoSerializableGuid.Reset();
-                EditorUtility.SetDirty(monoSerializableGuid);
+                _currentTarget.Reset();
+                EditorUtility.SetDirty(_currentTarget);
                 
                 // Reset the new guid field to the new guid.
                 // TODO: Would it be overkill to make an internal event for this?
-                _newGuidString = System.Guid.NewGuid().ToString();
+                _newGuidString = _currentTarget.GUIDString;
             }
         }
     }
