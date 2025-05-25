@@ -7,7 +7,7 @@ namespace _Project.SaveSystem.Editor.CustomEditors
     public class MonoSerializableGuidEditor : UnityEditor.Editor
     {
         private MonoSerializableGuid _currentTarget;
-        private bool wasTargetChangedThisFrame;
+        private bool _wasTargetChangedThisFrame;
         private string _newGuidString;
         
         public override void OnInspectorGUI()
@@ -21,7 +21,7 @@ namespace _Project.SaveSystem.Editor.CustomEditors
                 return;
             }
             
-            if (wasTargetChangedThisFrame)
+            if (_wasTargetChangedThisFrame)
             {
                 OnTargetChanged();
             }
@@ -40,7 +40,7 @@ namespace _Project.SaveSystem.Editor.CustomEditors
 
             if (target)
             {
-                wasTargetChangedThisFrame = newTarget != _currentTarget;
+                _wasTargetChangedThisFrame = newTarget != _currentTarget;
             }
             
             _currentTarget = newTarget;
@@ -104,7 +104,7 @@ namespace _Project.SaveSystem.Editor.CustomEditors
             
             if (isDuplicate)
             {
-                EditorGUILayout.HelpBox("This GUID is a duplicate of another ID in this scene. Ignore if this is intended.", MessageType.Info);
+                EditorGUILayout.HelpBox("This GUID is a duplicate of another ID in this scene.", MessageType.Error);
             }
 
         }
