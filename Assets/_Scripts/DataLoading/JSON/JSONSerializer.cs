@@ -33,6 +33,10 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
                 
                 return deserializedObject;
             }
+            catch (JsonSerializationException e)
+            {
+                throw new InvalidDataException("Failed to deserialize data.", e);
+            }
             catch (JsonReaderException e)
             {
                 throw new InvalidDataException("Invalid data format.", e);
