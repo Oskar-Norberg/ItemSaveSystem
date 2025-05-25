@@ -6,15 +6,24 @@ namespace _Project.SaveSystem.DataLoading.Common
     [System.Serializable]
     public class HeadSaveData : ILoadedData
     {
-        public List<SubSaveData> _subContainers;
+        // TODO: Any way I can have this private and still serialize it?
+        public Dictionary<SerializableGuid, SubSaveData> _subContainers = new();
         
-        public HeadSaveData(List<SubSaveData> saveDatas)
+        public HeadSaveData(IEnumerable<KeyValuePair<SerializableGuid, SubSaveData>> saveDatas)
         {
-            _subContainers = saveDatas;
+            AddEntries(saveDatas);
         }
 
-        public HeadSaveData() : this(new List<SubSaveData>())
+        public HeadSaveData()
         {
+        }
+        
+        public void AddEntries(IEnumerable<KeyValuePair<SerializableGuid, SubSaveData>> saveDatas)
+        {
+            foreach (var saveData in saveDatas)
+            {
+                _subContainers.Add(saveData.Key, saveData.Value);
+            }
         }
         
         // TODO: Consider making an extension class to hold this merge.
@@ -33,45 +42,36 @@ namespace _Project.SaveSystem.DataLoading.Common
             HashSet<SerializableGuid> lhGuids = new();
             foreach (var subSaveData in lh._subContainers)
             {
-                lhGuids.Add(subSaveData.GUID);
+                lhGuids.Add(subSaveData.Key);
             }
             
             // Add all rh sub containers that are not already in lh.
             foreach (var rhSubContainer in rh._subContainers)
             {
-                bool alreadyExists = lhGuids.Contains(rhSubContainer.GUID);
+                bool alreadyExists = lhGuids.Contains(rhSubContainer.Key);
                 
                 if (!alreadyExists)
                 {
-                    lh._subContainers.Add(rhSubContainer);
+                    lh._subContainers.Add(rhSubContainer.Key, rhSubContainer.Value);
                 }
             }
 
             return lh;
         }
     
-        public void AddSubContainer(SubSaveData subContainer)
+        public void AddSubContainer(SerializableGuid guid, SubSaveData subContainer)
         {
-            _subContainers.Add(subContainer);
+            _subContainers.Add(guid, subContainer);
         }
 
         public bool TryGetDataByGUID(SerializableGuid guid, out Dictionary<string, SaveData> data)
         {
-            // TODO: This should just be a dictionary.
-            // O(N) for each lookup, really really slow.
-            foreach (var container in _subContainers)
+            bool subContainerExists = _subContainers.TryGetValue(guid, out var subContainer);
+            
+            if (subContainerExists)
             {
-                if (Equals(container.GUID, guid))
-                {
-                    if (container.Data == null)
-                        break;
-                    
-                    if (container.Data.Count == 0)
-                        break;
-                    
-                    data = container.Data;
-                    return true;
-                }
+                data = subContainer.Data;
+                return true;
             }
 
             data = null;

@@ -67,11 +67,10 @@ namespace _Project.SaveSystem
             foreach (var saveable in _saveables)
             {
                 SubSaveData subSaveData = new SubSaveData(
-                    saveable.GUID,
                     saveable.GetSaveData()
                     );
                 
-                headSaveData.AddSubContainer(subSaveData);
+                headSaveData.AddSubContainer(saveable.GUID, subSaveData);
             }
             
             _saveFileService.SaveToFile( headSaveData, fileName, overrideSave);

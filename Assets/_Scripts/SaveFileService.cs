@@ -41,6 +41,7 @@ namespace _Project.SaveSystem
                     Debug.LogError("Invalid save. Backing up old one and overriding.");
 
                     string backupFileName = $"{fileName}_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.backup";
+                    // TODO: This can in theory throw an exception if the backup file already exists. This will never happen in practice, but is annoying when testing.
                     File.Copy(GetPathString(fileName), GetPathString(backupFileName));
                 }
             }
