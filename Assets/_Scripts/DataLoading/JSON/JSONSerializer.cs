@@ -54,7 +54,7 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
         {
             var settings = new JsonSerializerSettings
             {
-                TypeNameHandling = TypeNameHandling.Objects,
+                TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 // Slightly annoying to have to explicitly specify the SubSaveData type here.
                 Converters = new List<JsonConverter>{ new SerializableGuidConverter(), new SerializableGuidDictionaryConverter<SubSaveData>() }
