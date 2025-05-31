@@ -9,17 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0daf4043fdcfb4846a18f5fcfaf0ecd3, type: 3}
+  m_Script: {fileID: 11500000, guid: fd2fdeee1a424a9ca5f68caa73020840, type: 3}
   m_Name: TestGroup
   m_EditorClassIdentifier: 
-  Scenes:
-  - Scene:
-      asset: {fileID: 102900000, guid: 000accba5c917c24d8ce1f7e426c7e88, type: 3}
-      guid: 000accba5c917c24d8ce1f7e426c7e88
-    SetActive: 0
-    ReloadIfActive: 0
-  - Scene:
-      asset: {fileID: 102900000, guid: b18a0f3e8e0c72d4ca6f8c4e9ce87bef, type: 3}
-      guid: b18a0f3e8e0c72d4ca6f8c4e9ce87bef
-    SetActive: 1
-    ReloadIfActive: 0
+  SceneGroup:
+    Scenes:
+    - Scene:
+        asset: {fileID: 102900000, guid: 000accba5c917c24d8ce1f7e426c7e88, type: 3}
+        guid: 000accba5c917c24d8ce1f7e426c7e88
+      SetActive: 0
+      ReloadIfActive: 0
+    - Scene:
+        asset: {fileID: 102900000, guid: b18a0f3e8e0c72d4ca6f8c4e9ce87bef, type: 3}
+        guid: b18a0f3e8e0c72d4ca6f8c4e9ce87bef
+      SetActive: 1
+      ReloadIfActive: 0

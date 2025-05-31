@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TMP_GOTOMainScene : MonoBehaviour
 {
-    [SerializeField] private SceneGroup mainSceneGroup;
+    [SerializeField] private SceneGroupSO mainSceneGroup;
     
     void Start()
     {

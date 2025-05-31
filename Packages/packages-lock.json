@@ -15,14 +15,14 @@
         "com.unity.settings-manager": "2.0.1",
         "com.unity.nuget.newtonsoft-json": "3.0.2"
       },
-      "hash": "6211c87235bac0800add297c1f074f2a094231f1"
+      "hash": "4a35d05a25222f9d879c55a5fba74f5f8ab3bf7f"
     },
     "com.ringo.service-locator": {
       "version": "https://github.com/Oskar-Norberg/Unity-ServiceLocator.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "919566e1e47359be64fbf0459ecb7d936d12a7d8"
+      "hash": "4ad04a9a409cb8d637bc2baff9f9e3915fe90e4a"
     },
     "com.singularitygroup.hotreload": {
       "version": "git+https://gitlab.hotreload.net/root/hot-reload-releases.git#1.13.7",
