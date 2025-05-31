@@ -32,6 +32,7 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
         public override Dictionary<SerializableGuid, T> ReadJson(JsonReader reader, Type objectType, Dictionary<SerializableGuid, T> existingValue, bool hasExistingValue,
             JsonSerializer serializer)
         {
+            // TODO: Handle edge case where list is empty or null
             var list = serializer.Deserialize<List<KeyValuePair<SerializableGuid, T>>>(reader);
             return list.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
