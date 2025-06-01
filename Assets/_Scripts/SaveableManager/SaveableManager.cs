@@ -55,9 +55,19 @@ namespace _Project.SaveSystem
             SaveManager saveManager = ServiceLocator.Instance.GetService<SaveManager>();
             HeadSaveData loadedData = saveManager.LoadGame(fileName);
             
+            LoadSaveables(loadedData);
+        }
+
+        public void Load(HeadSaveData saveData)
+        {
+            LoadSaveables(saveData);
+        }
+
+        private void LoadSaveables(HeadSaveData saveData)
+        {
             foreach (var saveable in _saveables)
             {
-                if (loadedData.TryGetDataByGUID(saveable.GUID, out var data))
+                if (saveData.TryGetDataByGUID(saveable.GUID, out var data))
                 {
                     saveable.Load(data);
                 }
