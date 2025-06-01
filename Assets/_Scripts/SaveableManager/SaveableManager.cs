@@ -1,26 +1,28 @@
+using System;
 using System.Collections.Generic;
-using _Project.SaveSystem.DataLoading.Common;
+using _Project.SaveSystem.SaveLoader;
+using _Project.SaveSystem.Subsystem;
 using ringo.ServiceLocator;
 using UnityEngine;
 
 namespace _Project.SaveSystem
 {
-    public class SaveableManager : MonoBehaviour, ISaveableManager
+    public class SaveableManager : MonoSaveSubsystem, ISaveableManager
     {
         private List<Saveable> _saveables = new();
-        
-        private SaveManager _saveManager;
+        private ISaveLoader _saveLoader;
 
         private void Awake()
         {
             ServiceLocator.Instance.Register<ISaveableManager>(this);
         }
-
+        
         private void Start()
         {
-            _saveManager = ServiceLocator.Instance.GetService<SaveManager>();
+            _saveLoader = ServiceLocator.Instance.GetService<ISaveLoader>();
+            _saveLoader.RegisterSaveSubsystem(this);
         }
-        
+
         public void BindSaveable(Saveable saveable)
         {
             _saveables.Add(saveable);
@@ -33,46 +35,49 @@ namespace _Project.SaveSystem
                 Debug.LogWarning($"Saveable {saveable.GUIDString} not found in saveables list.");
             }
         }
-
-        // TODO: maybe this calls for a new ISaveable interface that has a GetSaveData method?
-        public HeadSaveData GetSaveData()
+        
+        public override object GetSaveData()
         {
-            return GetSaveablesData();
-        }
-
-        public void Load(HeadSaveData saveData)
-        {
-            LoadSaveables(saveData);
-        }
-
-        private HeadSaveData GetSaveablesData()
-        {
-            HeadSaveData headSaveData = new HeadSaveData();
+            Dictionary<SerializableGuid, Dictionary<string, SaveData>> saveableData = new();
             
             foreach (var saveable in _saveables)
             {
-                SubSaveData subSaveData = new SubSaveData(
-                    saveable.GetSaveData()
-                );
-                
-                headSaveData.AddSubContainer(saveable.GUID, subSaveData);
+                saveableData[saveable.GUID] = saveable.GetSaveData();
             }
-
-            return headSaveData;
+            
+            return new SaveableDataContainer(saveableData);
         }
-        private void LoadSaveables(HeadSaveData saveData)
+
+        public override void Load(object saveData)
         {
+            if (saveData is not SaveableDataContainer saveableDataContainer)
+            {
+                Debug.LogError("Invalid save data type. Expected SaveableDataContainer.");
+                return;
+            }
+            
             foreach (var saveable in _saveables)
             {
-                if (saveData.TryGetDataByGUID(saveable.GUID, out var data))
+                if (saveableDataContainer._saveableData.TryGetValue(saveable.GUID, out var data))
                 {
                     saveable.Load(data);
                 }
                 else
                 {
-                    Debug.Log($"Saveable {saveable.GUIDString} not found in loaded data.");
+                    Debug.LogWarning($"No data found for saveable {saveable.GUIDString} in loaded data.");
                 }
             }
+        }
+    }
+
+    [System.Serializable]
+    public struct SaveableDataContainer
+    {
+        public Dictionary<SerializableGuid, Dictionary<string, SaveData>> _saveableData;
+        
+        public SaveableDataContainer(Dictionary<SerializableGuid, Dictionary<string, SaveData>> saveableData)
+        {
+            _saveableData = saveableData;
         }
     }
 }
