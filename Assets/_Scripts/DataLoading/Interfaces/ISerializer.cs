@@ -7,7 +7,7 @@ namespace _Project.SaveSystem.Interfaces
          * <param name="objectToSerialize">The object to serialize.</param>
          * <returns>String representing serialized object.</returns>
          */
-        string Serialize(object objectToSerialize);
+        string Serialize<T>(T objectToSerialize);
         
         /**
          * <summary>Deserialize object.</summary>

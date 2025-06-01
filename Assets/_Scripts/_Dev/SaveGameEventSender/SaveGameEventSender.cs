@@ -12,26 +12,27 @@ namespace _Project.SaveSystem.SaveGameEventSender
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                var saveManager = ServiceLocator.Instance.GetService<SaveManager>();
+                var saveableManager = ServiceLocator.Instance.GetService<ISaveableManager>();
                 
-                if (saveManager == null)
+                if (saveableManager == null)
                 {
                     Debug.LogError("SaveManager not found in ServiceLocator.");
                     return;
                 }
-                saveManager.SaveGame(saveFileName, overrideSave);
+                saveableManager.Save(saveFileName, overrideSave);
             }
             
             if (Input.GetKeyDown(KeyCode.L))
             {
-                var saveManager = ServiceLocator.Instance.GetService<SaveManager>();
+                var saveableManager = ServiceLocator.Instance.GetService<ISaveableManager>();
                 
-                if (saveManager == null)
+                if (saveableManager == null)
                 {
                     Debug.LogError("SaveManager not found in ServiceLocator.");
                     return;
                 }
-                saveManager.LoadGame(saveFileName);
+                
+                saveableManager.Load(saveFileName);
             }
         }
     }

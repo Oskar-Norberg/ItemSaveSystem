@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace _Project.SaveSystem
 {
-    public class SerializerBootStrapper : MonoBehaviour
+    public class SaveManagerBootStrapper : MonoBehaviour
     {
         enum SerializerType
         {
@@ -18,17 +18,23 @@ namespace _Project.SaveSystem
 
         private void Awake()
         {
+            ISerializer serializer;
+            
             switch (serializerType)
             {
                 case SerializerType.Binary:
-                    ServiceLocator.Instance.Register<ISerializer>(new BinarySerializer());
+                    serializer = new BinarySerializer();
                     break;
                 // Default fallback to JSON.
                 default:
                 case SerializerType.JSON:
-                    ServiceLocator.Instance.Register<ISerializer>(new JSONSerializer());
+                    serializer = new JSONSerializer();
                     break;
             }
+            
+            var saveFileService = new SaveFileService(serializer);
+            var saveManager = new SaveManager(saveFileService);
+            ServiceLocator.Instance.Register<SaveManager>(saveManager);
         }
     }
 }
