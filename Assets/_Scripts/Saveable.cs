@@ -23,14 +23,15 @@ namespace _Project.SaveSystem
         {
             _monoSerializableGuid = GetComponent<MonoSerializableGuid>();
             
-            ServiceLocator.Instance.GetService<SaveManager>().BindSaveable(this);
+            // TODO: Possible error if SaveableManager is swapped at runtime.
+            ServiceLocator.Instance.GetService<ISaveableManager>().BindSaveable(this);
             
             PostAwakeErrorChecking();
         }
 
         private void OnDestroy()
         {
-            ServiceLocator.Instance.GetService<SaveManager>().UnbindSaveable(this);
+            ServiceLocator.Instance.GetService<ISaveableManager>().UnbindSaveable(this);
         }
 
         public void Bind(string bindName, IBindable bindable)
