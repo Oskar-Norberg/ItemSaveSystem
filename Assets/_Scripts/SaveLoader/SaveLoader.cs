@@ -43,6 +43,7 @@ namespace _Project.SaveSystem.SaveLoader
             foreach (var subsystem in _saveSubsystems)
             {
                 var subsystemData = data.TryGetSubsystemData(subsystem.GetType(), out var subsystemSaveData);
+                
                 if (subsystemData)
                 {
                     subsystem.Load(subsystemSaveData);
