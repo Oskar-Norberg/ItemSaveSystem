@@ -8,7 +8,7 @@ namespace _Project.SaveSystem.DataLoading.Binary
 {
     public class BinarySerializer : ISerializer
     {
-        public string Serialize(object objectToSerialize)
+        public string Serialize<T>(T objectToSerialize)
         {
             using var stream = new MemoryStream();
             

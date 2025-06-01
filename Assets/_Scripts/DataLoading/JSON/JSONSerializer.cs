@@ -7,7 +7,7 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
 {
     public class JSONSerializer : ISerializer
     {
-        public string Serialize(object objectToSerialize)
+        public string Serialize<T>(T objectToSerialize)
         {
             JsonSerializer jsonSerializer = CreateJSONSerializer();
             StringWriter stringWriter = CreateStringWriter();
