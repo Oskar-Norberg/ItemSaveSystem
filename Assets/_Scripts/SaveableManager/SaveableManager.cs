@@ -34,7 +34,18 @@ namespace _Project.SaveSystem
             }
         }
 
-        public void Save(string fileName, bool doOverride = false)
+        // TODO: maybe this calls for a new ISaveable interface that has a GetSaveData method?
+        public HeadSaveData GetSaveData()
+        {
+            return GetSaveablesData();
+        }
+
+        public void Load(HeadSaveData saveData)
+        {
+            LoadSaveables(saveData);
+        }
+
+        private HeadSaveData GetSaveablesData()
         {
             HeadSaveData headSaveData = new HeadSaveData();
             
@@ -46,23 +57,9 @@ namespace _Project.SaveSystem
                 
                 headSaveData.AddSubContainer(saveable.GUID, subSaveData);
             }
-            
-            _saveManager.SaveGame(fileName, headSaveData, doOverride);
-        }
 
-        public void Load(string fileName)
-        {
-            SaveManager saveManager = ServiceLocator.Instance.GetService<SaveManager>();
-            HeadSaveData loadedData = saveManager.LoadGame(fileName);
-            
-            LoadSaveables(loadedData);
+            return headSaveData;
         }
-
-        public void Load(HeadSaveData saveData)
-        {
-            LoadSaveables(saveData);
-        }
-
         private void LoadSaveables(HeadSaveData saveData)
         {
             foreach (var saveable in _saveables)
