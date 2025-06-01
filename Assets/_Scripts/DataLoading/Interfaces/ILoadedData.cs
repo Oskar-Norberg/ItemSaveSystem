@@ -1,9 +1,10 @@
-using System.Collections.Generic;
+using System;
 
 namespace _Project.SaveSystem.Interfaces.DataLoading
 {
     public interface ILoadedData
     {
-        public bool TryGetDataByGUID(SerializableGuid guid, out Dictionary<string, SaveData> data);
+        public bool TryGetSubsystemData(Type t, out object data);
+        public bool TryGetSubsystemData<T>(out T data);
     }
 }

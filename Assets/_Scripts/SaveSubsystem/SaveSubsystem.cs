@@ -1,16 +1,19 @@
-namespace _Project.SaveSystem.SaveSubsystem
+using _Project.SaveSystem.SaveLoader;
+
+namespace _Project.SaveSystem.Subsystem
 {
     public abstract class SaveSubsystem : ISaveSubsystem
     {
-        public abstract SaveData GetSaveData();
-        public abstract void Load(SaveData saveData);
+        public abstract object GetSaveData();
 
-        public void Register(SaveManager saveManager)
+        public abstract void Load(object saveData);
+
+        void ISaveSubsystem.Register(ISaveLoader saveManager)
         {
             saveManager.RegisterSaveSubsystem(this);
         }
-        
-        public void Unregister(SaveManager saveManager)
+
+        void ISaveSubsystem.Unregister(ISaveLoader saveManager)
         {
             saveManager.UnregisterSaveSubsystem(this);
         }

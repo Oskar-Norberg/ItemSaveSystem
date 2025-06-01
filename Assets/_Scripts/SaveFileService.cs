@@ -23,7 +23,7 @@ namespace _Project.SaveSystem
         }
 
         // TODO: Consider if this should be a TryLoad function rather than throwing an exception.
-        public HeadSaveData LoadFromFile(string fileName)
+        public T LoadFromFile<T>(string fileName)
         {
             if (!File.Exists(GetPathString(fileName)))
             {
@@ -34,7 +34,7 @@ namespace _Project.SaveSystem
             
             try 
             {
-                HeadSaveData saveData = _serializer.Deserialize<HeadSaveData>(serializedData);
+                T saveData = _serializer.Deserialize<T>(serializedData);
 
                 return saveData;
             }

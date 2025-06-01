@@ -19,14 +19,14 @@ namespace _Project.SaveSystem
         
         private MonoSerializableGuid _monoSerializableGuid;
         
-        private void Awake()
+        private void Start()
         {
             _monoSerializableGuid = GetComponent<MonoSerializableGuid>();
             
             // TODO: Possible error if SaveableManager is swapped at runtime.
             ServiceLocator.Instance.GetService<ISaveableManager>().BindSaveable(this);
             
-            PostAwakeErrorChecking();
+            PostStartErrorChecking();
         }
 
         private void OnDestroy()
@@ -75,7 +75,7 @@ namespace _Project.SaveSystem
                 kvp => kvp.Value.GetSaveData());
         }
 
-        private void PostAwakeErrorChecking()
+        private void PostStartErrorChecking()
         {
             if (!_monoSerializableGuid)
             {
