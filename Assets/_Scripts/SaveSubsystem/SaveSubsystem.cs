@@ -7,12 +7,12 @@ namespace _Project.SaveSystem.SaveSubsystem
 
         public void Register(SaveManager saveManager)
         {
-            // Register logic
+            saveManager.RegisterSaveSubsystem(this);
         }
         
         public void Unregister(SaveManager saveManager)
         {
-            // Unregister logic
+            saveManager.UnregisterSaveSubsystem(this);
         }
     }
 }

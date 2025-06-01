@@ -1,10 +1,13 @@
+using System.Collections.Generic;
 using _Project.SaveSystem.DataLoading.Common;
+using _Project.SaveSystem.SaveSubsystem;
 using UnityEngine;
 
 namespace _Project.SaveSystem
 {
     public class SaveManager
     {
+        private HashSet<ISaveSubsystem> _saveSubsystems = new();
         private SaveFileService _saveFileService;
         
         public SaveManager(SaveFileService saveFileService)
@@ -12,7 +15,7 @@ namespace _Project.SaveSystem
             _saveFileService = saveFileService;
         }
 
-        public HeadSaveData LoadGame(string fileName)
+        public void LoadGame(string fileName)
         {
             HeadSaveData loadedData = _saveFileService.LoadFromFile(fileName);
             
@@ -24,7 +27,7 @@ namespace _Project.SaveSystem
             return loadedData;
         }
 
-        public void SaveGame(string fileName, HeadSaveData data, bool overrideSave = false)
+        public void SaveGame(string fileName, bool overrideSave = false)
         {
             // Merge with existing save data if not overriding.
             // TODO: Nesting hell, make this into a separate funciton.
@@ -43,6 +46,19 @@ namespace _Project.SaveSystem
             }
             
             _saveFileService.SaveToFile(data, fileName);
+        }
+        
+        public void RegisterSaveSubsystem(ISaveSubsystem saveSubsystem)
+        {
+            _saveSubsystems.Add(saveSubsystem);
+        }
+        
+        public void UnregisterSaveSubsystem(ISaveSubsystem saveSubsystem)
+        {
+            if (!_saveSubsystems.Remove(saveSubsystem))
+            {
+                Debug.LogWarning($"Save subsystem {saveSubsystem.GetType().Name} not found in registered subsystems.");
+            }
         }
         
         public bool SaveFileExists(string fileName)
