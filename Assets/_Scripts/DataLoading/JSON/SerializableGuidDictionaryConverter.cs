@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
-{ 
+{
     public class SerializableGuidDictionaryConverter : JsonConverter
-    { 
+    {
+        private const string GuidPropertyName = "GUID";
+        private const string ValuePropertyName = "Value";
+        
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var objectType = value.GetType();
@@ -18,10 +21,10 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             {
                 writer.WriteStartObject();
                 
-                writer.WritePropertyName("Key");
+                writer.WritePropertyName(GuidPropertyName);
                 serializer.Serialize(writer, entry.Key);
                 
-                writer.WritePropertyName("Value");
+                writer.WritePropertyName(ValuePropertyName);
                 serializer.Serialize(writer, entry.Value, valueType);
                 
                 writer.WriteEndObject();
@@ -55,11 +58,11 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
 
                     switch ((string) reader.Value)
                     {
-                        case "Key":
+                        case GuidPropertyName:
                             reader.Read();
                             key = serializer.Deserialize<SerializableGuid>(reader);
                             break;
-                        case "Value":
+                        case ValuePropertyName:
                             reader.Read();
                             value = serializer.Deserialize(reader, valueType);
                             break;
