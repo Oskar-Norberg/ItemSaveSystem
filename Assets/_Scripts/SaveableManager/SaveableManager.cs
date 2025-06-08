@@ -70,7 +70,8 @@ namespace _Project.SaveSystem
         }
     }
 
-    [System.Serializable]
+    [Serializable]
+    [Attributes.SaveData]
     public struct SaveableDataContainer
     {
         public Dictionary<SerializableGuid, Dictionary<string, SaveData>> _saveableData;
