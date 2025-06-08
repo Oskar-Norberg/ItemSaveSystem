@@ -49,10 +49,5 @@ namespace _Project.SaveSystem
         {
             return GuidString.GetHashCode();
         }
-        
-        public override string ToString()
-        {
-            return GuidString;
-        }
     }
 }
