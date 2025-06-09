@@ -1,27 +1,31 @@
-using System.Linq;
-using _Project.SaveSystem.DataLoading.Common;
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
 {
-    using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-
-    public class SerializableGuidDictionaryConverter<T> : JsonConverter<Dictionary<SerializableGuid, T>> 
+    public class SerializableGuidDictionaryConverter : JsonConverter
     {
-        public override void WriteJson(JsonWriter writer, Dictionary<SerializableGuid, T> value, JsonSerializer serializer)
+        private const string GuidPropertyName = "GUID";
+        private const string ValuePropertyName = "Value";
+        
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            var objectType = value.GetType();
+            var valueType = objectType.GetGenericArguments()[1];
+            var dict = (System.Collections.IDictionary) value;
+
             writer.WriteStartArray();
             
-            foreach (var kvp in value)
+            foreach (System.Collections.DictionaryEntry entry in dict)
             {
                 writer.WriteStartObject();
                 
-                writer.WritePropertyName("Key");
-                serializer.Serialize(writer, kvp.Key);
+                writer.WritePropertyName(GuidPropertyName);
+                serializer.Serialize(writer, entry.Key);
                 
-                writer.WritePropertyName("Value");
-                serializer.Serialize(writer, kvp.Value);
+                writer.WritePropertyName(ValuePropertyName);
+                serializer.Serialize(writer, entry.Value, valueType);
                 
                 writer.WriteEndObject();
             }
@@ -29,12 +33,56 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             writer.WriteEndArray();
         }
 
-        public override Dictionary<SerializableGuid, T> ReadJson(JsonReader reader, Type objectType, Dictionary<SerializableGuid, T> existingValue, bool hasExistingValue,
-            JsonSerializer serializer)
+        // Slightly large function, possibly could be split up for readability.
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            // TODO: Handle edge case where list is empty or null
-            var list = serializer.Deserialize<List<KeyValuePair<SerializableGuid, T>>>(reader);
-            return list.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var valueType = objectType.GetGenericArguments()[1];
+            var result = (System.Collections.IDictionary) Activator.CreateInstance(objectType);
+
+            if (reader.TokenType is JsonToken.None or not JsonToken.StartArray)
+                throw new JsonSerializationException("Expected StartArray token.");
+
+            while (reader.Read() && reader.TokenType != JsonToken.EndArray)
+            {
+                if (reader.TokenType != JsonToken.StartObject)
+                    throw new JsonSerializationException("Expected StartObject token.");
+
+                SerializableGuid key = null;
+                object value = null;
+
+                while (reader.Read() && reader.TokenType != JsonToken.EndObject)
+                {
+                    if (reader.TokenType != JsonToken.PropertyName)
+                        throw new JsonSerializationException("Expected PropertyName token.");
+                    
+
+                    switch ((string) reader.Value)
+                    {
+                        case GuidPropertyName:
+                            reader.Read();
+                            key = serializer.Deserialize<SerializableGuid>(reader);
+                            break;
+                        case ValuePropertyName:
+                            reader.Read();
+                            value = serializer.Deserialize(reader, valueType);
+                            break;
+                        default:
+                            throw new JsonSerializationException($"Unexpected property '{reader.Value}'.");
+                    }
+                }
+
+                result.Add(key, value);
+            }
+
+            return result;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            // Is generic type of Dictionary<SerializableGuid, T>
+            return objectType.IsGenericType
+                   && objectType.GetGenericTypeDefinition() == typeof(Dictionary<,>)
+                   && objectType.GetGenericArguments()[0] == typeof(SerializableGuid);
         }
     }
 }

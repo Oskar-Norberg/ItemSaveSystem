@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+using System;
 
 namespace _Project.SaveSystem.Interfaces.DataLoading
 {
     public interface ILoadedData
     {
-        public bool TryGetDataByGUID(SerializableGuid guid, out Dictionary<string, SaveData> data);
+        public bool TryGetSubsystemData(SerializableGuid guid, out object data);
     }
 }

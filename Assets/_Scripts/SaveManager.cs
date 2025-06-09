@@ -12,9 +12,9 @@ namespace _Project.SaveSystem
             _saveFileService = saveFileService;
         }
 
-        public HeadSaveData LoadGame(string fileName)
+        public T LoadGame<T>(string fileName)
         {
-            HeadSaveData loadedData = _saveFileService.LoadFromFile(fileName);
+            T loadedData = _saveFileService.LoadFromFile<T>(fileName);
             
             if (loadedData == null)
             {
@@ -24,25 +24,9 @@ namespace _Project.SaveSystem
             return loadedData;
         }
 
-        public void SaveGame(string fileName, HeadSaveData data, bool overrideSave = false)
+        public void SaveGame<T>(string fileName, T saveData)
         {
-            // Merge with existing save data if not overriding.
-            // TODO: Nesting hell, make this into a separate funciton.
-            if (!overrideSave)
-            {
-                // TODO: Error handling.
-                if (SaveFileExists(fileName))
-                {
-                    HeadSaveData loadedData = LoadGame(fileName);
-                    
-                    if (loadedData != null)
-                    {
-                        HeadSaveData.Merge(data, loadedData);
-                    }
-                }
-            }
-            
-            _saveFileService.SaveToFile(data, fileName);
+            _saveFileService.SaveToFile(saveData, fileName);
         }
         
         public bool SaveFileExists(string fileName)
