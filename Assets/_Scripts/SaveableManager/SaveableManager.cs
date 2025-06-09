@@ -12,6 +12,9 @@ namespace _Project.SaveSystem
         private List<Saveable> _saveables = new();
         private ISaveLoader _saveLoader;
 
+        public override SerializableGuid GUID => _guid;
+        private SerializableGuid _guid = new("SaveableManager");
+
         private void Awake()
         {
             ServiceLocator.Instance.Register<ISaveableManager>(this);

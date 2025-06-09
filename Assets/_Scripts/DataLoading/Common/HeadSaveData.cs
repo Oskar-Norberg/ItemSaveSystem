@@ -8,42 +8,30 @@ namespace _Project.SaveSystem.DataLoading.Common
     public class HeadSaveData : ILoadedData
     {
         // TODO: Any way I can have this private and still serialize it?
-        public Dictionary<Type, object> _saveDatas = new();
+        public Dictionary<SerializableGuid, object> _saveDatas = new();
         
-        public HeadSaveData(Dictionary<Type, object> saveDatas)
+        public HeadSaveData(Dictionary<SerializableGuid, object> saveDatas)
         {
             _saveDatas = saveDatas;
         }
 
-        public HeadSaveData() : this(new Dictionary<Type, object>())
+        public HeadSaveData() : this(new())
         {
         }
 
-        public void AddSubContainer(Type type, object data)
+        public void AddSubContainer(SerializableGuid type, object data)
         {
             _saveDatas.Add(type, data);
         }
         
-        public void AddData<T>(object data)
+        public void AddData(SerializableGuid guid, object data)
         {
-            AddSubContainer(typeof(T), data);
+            AddSubContainer(guid, data);
         }
 
-        public bool TryGetSubsystemData(Type t, out object data)
+        public bool TryGetSubsystemData(SerializableGuid guid, out object data)
         {
-            return _saveDatas.TryGetValue(t, out data);
-        }
-
-        public bool TryGetSubsystemData<T>(out T data)
-        {
-            if (_saveDatas.TryGetValue(typeof(T), out var value) && value is T typedValue)
-            {
-                data = typedValue;
-                return true;
-            }
-
-            data = default;
-            return false;
+            return _saveDatas.TryGetValue(guid, out data);
         }
     }
 }

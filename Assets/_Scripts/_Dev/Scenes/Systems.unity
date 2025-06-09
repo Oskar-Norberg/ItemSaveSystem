@@ -385,7 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a4b4b5ff56d45d7a8512383d1b0ae76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializerType: 1
+  serializerType: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
