@@ -13,6 +13,7 @@ namespace _Project.SaveSystem
         private ISaveLoader _saveLoader;
 
         public override SerializableGuid GUID => _guid;
+        // TODO: Make this a serialize field so it can be set in the inspector.
         private SerializableGuid _guid = new("SaveableManager");
 
         private void Awake()
@@ -74,7 +75,7 @@ namespace _Project.SaveSystem
     }
 
     [Serializable]
-    [Attributes.SaveData]
+    [Attributes.SaveData("SaveableDataContainer")]
     public struct SaveableDataContainer
     {
         public Dictionary<SerializableGuid, Dictionary<string, SaveData>> _saveableData;

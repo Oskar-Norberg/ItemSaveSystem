@@ -6,5 +6,14 @@ namespace _Project.SaveSystem.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class SaveData : Attribute
     {
+        public string Name
+        {
+            get; private set;
+        }
+
+        public SaveData(string name)
+        {
+            Name = name;
+        }
     }
 }

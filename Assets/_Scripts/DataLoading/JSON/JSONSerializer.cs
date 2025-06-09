@@ -55,7 +55,8 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             {
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
-                Converters = new List<JsonConverter>{ new SerializableGuidConverter(), new SerializableGuidDictionaryConverter() }
+                Converters = new List<JsonConverter>{ new SerializableGuidConverter(), new SerializableGuidDictionaryConverter() },
+                SerializationBinder = new JSONSaveDataBinder()
             };
             
             var jsonSerializer = JsonSerializer.Create(settings);
