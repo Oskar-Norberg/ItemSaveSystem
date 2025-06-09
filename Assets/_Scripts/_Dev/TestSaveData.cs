@@ -1,11 +1,10 @@
 using System;
-using _Project.SaveSubsystems.Bindable;
 
 namespace _Project.SaveSystem._Dev
 {
     [Serializable]
-    [Attributes.SaveData("TestSaveData")]
-    public class TestSaveData : SaveData
+    [ringo.SaveSystem.Attributes.SaveData("TestSaveData")]
+    public class TestSaveData : ringo.SaveModules.Subsystems.Bindable.SaveData
     {
         public int X, Y, Z;
     }

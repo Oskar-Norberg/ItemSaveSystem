@@ -1,4 +1,4 @@
-namespace _Project.SaveSubsystems.Bindable
+namespace ringo.SaveModules.Subsystems.Bindable
 {
     public interface ISaveableManager
     {

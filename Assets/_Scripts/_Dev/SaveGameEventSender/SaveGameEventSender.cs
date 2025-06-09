@@ -1,4 +1,4 @@
-using _Project.SaveSystem.SaveLoader;
+using ringo.SaveSystem.Managers;
 using ringo.ServiceLocator;
 using UnityEngine;
 
@@ -13,13 +13,13 @@ namespace _Project.SaveSystem.SaveGameEventSender
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                var saveLoader = ServiceLocator.Instance.GetService<ISaveLoader>();
+                var saveLoader = GlobalServiceLocator.Instance.GetService<ISaveLoader>();
                 saveLoader.Save(saveFileName, overrideSave);
             }
             
             if (Input.GetKeyDown(KeyCode.L))
             {
-                var saveLoader = ServiceLocator.Instance.GetService<ISaveLoader>();
+                var saveLoader = GlobalServiceLocator.Instance.GetService<ISaveLoader>();
                 saveLoader.Load(saveFileName);
             }
         }

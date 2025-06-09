@@ -22,7 +22,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "4ad04a9a409cb8d637bc2baff9f9e3915fe90e4a"
+      "hash": "908e7683d736a74a283fdf85b2adc4c9f73fe89b"
     },
     "com.singularitygroup.hotreload": {
       "version": "git+https://gitlab.hotreload.net/root/hot-reload-releases.git#1.13.7",
