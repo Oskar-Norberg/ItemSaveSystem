@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Project.SaveSystem;
 using _Project.SaveSystem.Interfaces;
 using ringo.ServiceLocator;
 using UnityEngine;
 
-namespace _Project.SaveSystem
+namespace _Project.SaveSubsystems.Bindable
 {
     [Serializable]
     [RequireComponent(typeof(MonoSerializableGuid))]

@@ -1,4 +1,4 @@
-namespace _Project.SaveSystem
+namespace _Project.SaveSubsystems.Bindable
 {
     public interface ISaveableManager
     {

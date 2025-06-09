@@ -5,9 +5,9 @@ namespace _Project.SaveSystem.DataLoading.Common
     [System.Serializable]
     public class SubSaveData
     {
-        public Dictionary<string, SaveData> Data;
+        public Dictionary<string, object> Data;
 
-        public SubSaveData(Dictionary<string, SaveData> data)
+        public SubSaveData(Dictionary<string, object> data)
         {
             Data = data;
         }

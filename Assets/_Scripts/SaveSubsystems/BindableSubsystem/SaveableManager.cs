@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using _Project.SaveSystem;
 using _Project.SaveSystem.SaveLoader;
 using _Project.SaveSystem.Subsystem;
 using ringo.ServiceLocator;
 using UnityEngine;
 
-namespace _Project.SaveSystem
+namespace _Project.SaveSubsystems.Bindable
 {
     public class SaveableManager : MonoSaveSubsystem, ISaveableManager
     {
@@ -75,7 +76,7 @@ namespace _Project.SaveSystem
     }
 
     [Serializable]
-    [Attributes.SaveData("SaveableDataContainer")]
+    [SaveSystem.Attributes.SaveData("SaveableData")]
     public struct SaveableDataContainer
     {
         public Dictionary<SerializableGuid, Dictionary<string, SaveData>> _saveableData;

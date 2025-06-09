@@ -1,4 +1,4 @@
-using _Project.SaveSystem.Interfaces;
+using _Project.SaveSubsystems.Bindable;
 using UnityEngine;
 
 namespace _Project.SaveSystem._Dev
