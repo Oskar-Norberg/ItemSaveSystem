@@ -1,7 +1,6 @@
 namespace ringo.SaveSystem.GUID
 {
-    // TODO: Rename to IGUIDProvider.
-    public interface IGUIDHolder
+    public interface IGUIDProvider
     {
         public SerializableGuid GUID { get; }
     }

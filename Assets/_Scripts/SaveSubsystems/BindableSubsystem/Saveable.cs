@@ -9,7 +9,7 @@ namespace ringo.SaveModules.Subsystems.Bindable
 {
     [Serializable]
     [RequireComponent(typeof(MonoSerializableGuid))]
-    public class Saveable : MonoBehaviour, IGUIDHolder
+    public class Saveable : MonoBehaviour, IGUIDProvider
     {
         public string GUIDString => _monoSerializableGuid.GUIDString;
         public SerializableGuid GUID => _monoSerializableGuid.GUID;
