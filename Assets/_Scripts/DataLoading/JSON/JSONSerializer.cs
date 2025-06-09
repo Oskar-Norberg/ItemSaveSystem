@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using _Project.SaveSystem.DataLoading.Common;
 using Newtonsoft.Json;
 
 namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
@@ -56,8 +55,8 @@ namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
             {
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
-                // Slightly annoying to have to explicitly specify the SubSaveData type here.
-                Converters = new List<JsonConverter>{ new SerializableGuidConverter(), new SerializableGuidDictionaryConverter<SubSaveData>() }
+                Converters = new List<JsonConverter>{ new SerializableGuidConverter(), new SerializableGuidDictionaryConverter() },
+                SerializationBinder = new JSONSaveDataBinder()
             };
             
             var jsonSerializer = JsonSerializer.Create(settings);

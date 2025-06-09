@@ -5,6 +5,8 @@ namespace _Project.SaveSystem.Subsystem
 {
     public abstract class MonoSaveSubsystem : MonoBehaviour, ISaveSubsystem
     {
+        public abstract SerializableGuid GUID { get; }
+        
         public abstract object GetSaveData();
 
         public abstract void Load(object saveData);

@@ -12,6 +12,10 @@ namespace _Project.SaveSystem
         private List<Saveable> _saveables = new();
         private ISaveLoader _saveLoader;
 
+        public override SerializableGuid GUID => _guid;
+        // TODO: Make this a serialize field so it can be set in the inspector.
+        private SerializableGuid _guid = new("SaveableManager");
+
         private void Awake()
         {
             ServiceLocator.Instance.Register<ISaveableManager>(this);
@@ -70,7 +74,8 @@ namespace _Project.SaveSystem
         }
     }
 
-    [System.Serializable]
+    [Serializable]
+    [Attributes.SaveData("SaveableDataContainer")]
     public struct SaveableDataContainer
     {
         public Dictionary<SerializableGuid, Dictionary<string, SaveData>> _saveableData;

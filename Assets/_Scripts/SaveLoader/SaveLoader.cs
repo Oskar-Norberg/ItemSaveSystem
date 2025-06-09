@@ -30,7 +30,7 @@ namespace _Project.SaveSystem.SaveLoader
             
             foreach (var subsystem in _saveSubsystems)
             {
-                data.AddSubContainer(subsystem.GetType(), subsystem.GetSaveData());
+                data.AddSubContainer(subsystem.GUID, subsystem.GetSaveData());
             }
 
             _saveManager.SaveGame(fileName, data);
@@ -42,7 +42,7 @@ namespace _Project.SaveSystem.SaveLoader
 
             foreach (var subsystem in _saveSubsystems)
             {
-                var subsystemData = data.TryGetSubsystemData(subsystem.GetType(), out var subsystemSaveData);
+                var subsystemData = data.TryGetSubsystemData(subsystem.GUID, out var subsystemSaveData);
                 if (subsystemData)
                 {
                     subsystem.Load(subsystemSaveData);
