@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using _Project.SaveSystem;
-using _Project.SaveSystem.SaveLoader;
-using _Project.SaveSystem.Subsystem;
+using ringo.SaveSystem.GUID;
+using ringo.SaveSystem.Managers;
+using ringo.SaveSystem.Subsystem;
 using ringo.ServiceLocator;
 using UnityEngine;
 
-namespace _Project.SaveSubsystems.Bindable
+namespace ringo.SaveModules.Subsystems.Bindable
 {
     public class SaveableManager : MonoSaveSubsystem, ISaveableManager
     {
@@ -19,12 +19,12 @@ namespace _Project.SaveSubsystems.Bindable
 
         private void Awake()
         {
-            ServiceLocator.Instance.Register<ISaveableManager>(this);
+            GlobalServiceLocator.Instance.Register<ISaveableManager>(this);
         }
         
         private void Start()
         {
-            _saveLoader = ServiceLocator.Instance.GetService<ISaveLoader>();
+            _saveLoader = GlobalServiceLocator.Instance.GetService<ISaveLoader>();
             _saveLoader.RegisterSaveSubsystem(this);
         }
 

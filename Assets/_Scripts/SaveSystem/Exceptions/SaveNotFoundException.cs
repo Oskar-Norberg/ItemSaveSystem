@@ -1,6 +1,6 @@
 using System;
 
-namespace _Project.SaveSystem.Exceptions
+namespace ringo.SaveSystem.Exceptions
 {
     public class SaveNotFoundException : Exception
     {

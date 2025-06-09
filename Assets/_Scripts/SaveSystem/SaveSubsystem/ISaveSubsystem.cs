@@ -1,7 +1,7 @@
-using _Project.SaveSystem.Interfaces;
-using _Project.SaveSystem.SaveLoader;
+using ringo.SaveSystem.GUID;
+using ringo.SaveSystem.Managers;
 
-namespace _Project.SaveSystem.Subsystem
+namespace ringo.SaveSystem.Subsystem
 {
     public interface ISaveSubsystem : IGUIDHolder
     {

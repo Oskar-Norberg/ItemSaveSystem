@@ -1,4 +1,4 @@
-using _Project.SaveSubsystems.Bindable;
+using ringo.SaveModules.Subsystems.Bindable;
 using UnityEngine;
 
 namespace _Project.SaveSystem._Dev

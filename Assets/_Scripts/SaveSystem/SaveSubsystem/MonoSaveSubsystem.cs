@@ -1,7 +1,8 @@
-using _Project.SaveSystem.SaveLoader;
+using ringo.SaveSystem.GUID;
+using ringo.SaveSystem.Managers;
 using UnityEngine;
 
-namespace _Project.SaveSystem.Subsystem
+namespace ringo.SaveSystem.Subsystem
 {
     public abstract class MonoSaveSubsystem : MonoBehaviour, ISaveSubsystem
     {

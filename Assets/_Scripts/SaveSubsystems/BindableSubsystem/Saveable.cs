@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using _Project.SaveSystem;
-using _Project.SaveSystem.Interfaces;
+using ringo.SaveSystem.GUID;
 using ringo.ServiceLocator;
 using UnityEngine;
 
-namespace _Project.SaveSubsystems.Bindable
+namespace ringo.SaveModules.Subsystems.Bindable
 {
     [Serializable]
     [RequireComponent(typeof(MonoSerializableGuid))]
@@ -25,14 +24,14 @@ namespace _Project.SaveSubsystems.Bindable
             _monoSerializableGuid = GetComponent<MonoSerializableGuid>();
             
             // TODO: Possible error if SaveableManager is swapped at runtime.
-            ServiceLocator.Instance.GetService<ISaveableManager>().BindSaveable(this);
+            GlobalServiceLocator.Instance.GetService<ISaveableManager>().BindSaveable(this);
             
             PostStartErrorChecking();
         }
 
         private void OnDestroy()
         {
-            ServiceLocator.Instance.GetService<ISaveableManager>().UnbindSaveable(this);
+            GlobalServiceLocator.Instance.GetService<ISaveableManager>().UnbindSaveable(this);
         }
 
         public void Bind(string bindName, IBindable bindable)

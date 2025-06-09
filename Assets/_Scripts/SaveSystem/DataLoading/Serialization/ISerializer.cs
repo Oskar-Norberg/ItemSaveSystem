@@ -1,4 +1,4 @@
-namespace _Project.SaveSystem.Interfaces
+namespace ringo.SaveSystem.DataLoading.Serialization
 {
     public interface ISerializer
     {

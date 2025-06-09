@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace _Project.SaveSystem
+namespace ringo.SaveSystem.GUID
 {
     public class MonoSerializableGuid : MonoBehaviour
     {

@@ -1,7 +1,7 @@
-using _Project.SaveSystem.DataLoading.Common;
+using ringo.SaveSystem.Services;
 using UnityEngine;
 
-namespace _Project.SaveSystem
+namespace ringo.SaveSystem.Managers
 {
     public class SaveManager
     {

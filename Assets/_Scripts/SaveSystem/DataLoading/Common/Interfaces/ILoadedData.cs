@@ -1,6 +1,6 @@
-using System;
+using ringo.SaveSystem.GUID;
 
-namespace _Project.SaveSystem.Interfaces.DataLoading
+namespace ringo.SaveSystem.DataLoading.Common
 {
     public interface ILoadedData
     {

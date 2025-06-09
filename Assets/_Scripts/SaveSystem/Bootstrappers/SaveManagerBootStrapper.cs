@@ -1,10 +1,12 @@
-using _Project.SaveSystem.DataLoading.Binary;
-using _Project.SaveSystem.Interfaces;
-using _Project.SaveSystem.Interfaces.DataLoading.JSON;
+using ringo.SaveSystem.DataLoading.Serialization;
+using ringo.SaveSystem.DataLoading.Serialization.Binary;
+using ringo.SaveSystem.DataLoading.Serialization.JSON;
+using ringo.SaveSystem.Managers;
+using ringo.SaveSystem.Services;
 using ringo.ServiceLocator;
 using UnityEngine;
 
-namespace _Project.SaveSystem
+namespace ringo.SaveSystem.Bootstrappers
 {
     public class SaveManagerBootStrapper : MonoBehaviour
     {
@@ -34,7 +36,7 @@ namespace _Project.SaveSystem
             
             var saveFileService = new SaveFileService(serializer);
             var saveManager = new SaveManager(saveFileService);
-            ServiceLocator.Instance.Register<SaveManager>(saveManager);
+            GlobalServiceLocator.Instance.Register<SaveManager>(saveManager);
         }
     }
 }

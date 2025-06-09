@@ -1,6 +1,6 @@
 using System;
 
-namespace _Project.SaveSystem.Attributes
+namespace ringo.SaveSystem.Attributes
 {
     // TODO: Add alias support for attributes.
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]

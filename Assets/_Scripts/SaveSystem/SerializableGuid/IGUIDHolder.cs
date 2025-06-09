@@ -1,4 +1,4 @@
-namespace _Project.SaveSystem.Interfaces
+namespace ringo.SaveSystem.GUID
 {
     // TODO: Rename to IGUIDProvider.
     public interface IGUIDHolder

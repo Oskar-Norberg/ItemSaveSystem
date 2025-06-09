@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
+namespace ringo.SaveSystem.DataLoading.Serialization.JSON
 {
     public class JSONSerializer : ISerializer
     {

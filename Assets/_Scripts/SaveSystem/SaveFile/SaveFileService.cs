@@ -1,10 +1,9 @@
 using System.IO;
-using _Project.SaveSystem.DataLoading.Common;
-using _Project.SaveSystem.Exceptions;
-using _Project.SaveSystem.Interfaces;
+using ringo.SaveSystem.DataLoading.Serialization;
+using ringo.SaveSystem.Exceptions;
 using UnityEngine;
 
-namespace _Project.SaveSystem
+namespace ringo.SaveSystem.Services
 {
     public class SaveFileService
     {

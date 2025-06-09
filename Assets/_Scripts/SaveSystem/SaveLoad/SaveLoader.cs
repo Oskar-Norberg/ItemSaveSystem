@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using _Project.SaveSystem.DataLoading.Common;
-using _Project.SaveSystem.Subsystem;
+using ringo.SaveSystem.DataLoading.Common;
+using ringo.SaveSystem.Subsystem;
 using ringo.ServiceLocator;
 using UnityEngine;
 
-namespace _Project.SaveSystem.SaveLoader
+namespace ringo.SaveSystem.Managers
 {
     public class SaveLoader : MonoBehaviour, ISaveLoader
     {
@@ -14,12 +14,12 @@ namespace _Project.SaveSystem.SaveLoader
 
         private void Awake()
         {
-            ServiceLocator.Instance.Register<ISaveLoader>(this);
+            GlobalServiceLocator.Instance.Register<ISaveLoader>(this);
         }
 
         private void Start()
         {
-            _saveManager = ServiceLocator.Instance.GetService<SaveManager>();
+            _saveManager = GlobalServiceLocator.Instance.GetService<SaveManager>();
         }
 
         public void Save(string fileName, bool overrideSave = false)

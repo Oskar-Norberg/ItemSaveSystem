@@ -5,7 +5,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
+namespace ringo.SaveSystem.DataLoading.Serialization.JSON
 {
     public class JSONSaveDataBinder : ISerializationBinder
     {

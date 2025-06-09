@@ -1,10 +1,9 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using _Project.SaveSystem.Exceptions;
-using _Project.SaveSystem.Interfaces;
+using ringo.SaveSystem.Exceptions;
 
-namespace _Project.SaveSystem.DataLoading.Binary
+namespace ringo.SaveSystem.DataLoading.Serialization.Binary
 {
     public class BinarySerializer : ISerializer
     {

@@ -1,7 +1,8 @@
+using ringo.SaveSystem.GUID;
 using UnityEditor;
 using UnityEngine;
 
-namespace _Project.SaveSystem.Editor.CustomEditors
+namespace ringo.SaveSystem.Editor.CustomEditors
 {
     [CustomEditor(typeof(MonoSerializableGuid))]
     public class MonoSerializableGuidEditor : UnityEditor.Editor

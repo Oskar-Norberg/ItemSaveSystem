@@ -1,7 +1,8 @@
 using System;
 using Newtonsoft.Json;
+using ringo.SaveSystem.GUID;
 
-namespace _Project.SaveSystem.Interfaces.DataLoading.JSON
+namespace ringo.SaveSystem.DataLoading.Serialization.JSON
 {
     public class SerializableGuidConverter : JsonConverter<SerializableGuid>
     {

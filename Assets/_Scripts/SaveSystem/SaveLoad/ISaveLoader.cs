@@ -1,6 +1,6 @@
-using _Project.SaveSystem.Subsystem;
+using ringo.SaveSystem.Subsystem;
 
-namespace _Project.SaveSystem.SaveLoader
+namespace ringo.SaveSystem.Managers
 {
     public interface ISaveLoader
     {

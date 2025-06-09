@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace _Project.SaveSystem.DataLoading.Common
+namespace ringo.SaveSystem.DataLoading.Common
 {
     [System.Serializable]
     public class SubSaveData

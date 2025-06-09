@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using _Project.SaveSystem.Interfaces.DataLoading;
+using ringo.SaveSystem.GUID;
 
-namespace _Project.SaveSystem.DataLoading.Common
+namespace ringo.SaveSystem.DataLoading.Common
 {
     [Serializable]
     public class HeadSaveData : ILoadedData

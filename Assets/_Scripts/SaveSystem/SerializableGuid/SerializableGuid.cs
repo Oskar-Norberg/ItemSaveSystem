@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace _Project.SaveSystem
+namespace ringo.SaveSystem.GUID
 {
     [Serializable]
     public class SerializableGuid
