@@ -43,7 +43,7 @@ namespace ringo.SaveModules.Subsystems.Bindable
         
         public override object GetSaveData()
         {
-            Dictionary<SerializableGuid, Dictionary<string, SaveData>> saveableData = new();
+            Dictionary<SerializableGuid, Dictionary<string, object>> saveableData = new();
             
             foreach (var saveable in _saveables)
             {
@@ -79,9 +79,9 @@ namespace ringo.SaveModules.Subsystems.Bindable
     [SaveSystem.Attributes.SaveData("SaveableData")]
     public struct SaveableDataContainer
     {
-        public Dictionary<SerializableGuid, Dictionary<string, SaveData>> _saveableData;
+        public Dictionary<SerializableGuid, Dictionary<string, object>> _saveableData;
         
-        public SaveableDataContainer(Dictionary<SerializableGuid, Dictionary<string, SaveData>> saveableData)
+        public SaveableDataContainer(Dictionary<SerializableGuid, Dictionary<string, object>> saveableData)
         {
             _saveableData = saveableData;
         }

@@ -4,7 +4,7 @@ namespace ringo.SaveModules.Subsystems.Bindable
     // TODO: Make this generic so that it can be used with any type of SaveData.
     public interface IBindable
     {
-        public SaveData GetSaveData();
-        public void LoadSaveData(SaveData saveData);
+        public object GetSaveData();
+        public void LoadSaveData(object bindableData);
     }
 }

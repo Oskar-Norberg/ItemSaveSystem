@@ -1,10 +1,11 @@
 using System;
-using ringo.SaveModules.Subsystems.Bindable;
+using ringo.SaveSystem.Attributes;
 
 namespace _Project.SaveSystem._Dev
 {
     [Serializable]
-    public class TestSaveData2 : SaveData
+    [SaveData("TestBindableData2")]
+    public class TestBindableData2
     {
         public string A, B, C;
     }

@@ -51,7 +51,7 @@ namespace ringo.SaveModules.Subsystems.Bindable
             }
         }
         
-        public void Load(Dictionary<string, SaveData> loadedData)
+        public void Load(Dictionary<string, object> loadedData)
         {
             foreach (var kvp in loadedData)
             {
@@ -66,7 +66,7 @@ namespace ringo.SaveModules.Subsystems.Bindable
             }
         }
         
-        public Dictionary<string, SaveData> GetSaveData()
+        public Dictionary<string, object> GetSaveData()
         {
             // TODO: Consider making this a list of SaveData instead of a dictionary.
             // TODO: This will generate a bit of garbage.

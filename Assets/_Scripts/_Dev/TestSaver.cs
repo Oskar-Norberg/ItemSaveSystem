@@ -1,16 +1,17 @@
 using ringo.SaveModules.Subsystems.Bindable;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Project.SaveSystem._Dev
 {
     [RequireComponent(typeof(Saveable))]
     public class TestSaver : MonoBehaviour, IBindable
     {
-        [SerializeField] private TestSaveData testSaveData;
+        [FormerlySerializedAs("testSaveData")] [SerializeField] private TestBindableData testBindableData;
 
         private void Start()
         {
-            testSaveData ??= new TestSaveData();
+            testBindableData ??= new TestBindableData();
 
             GetComponent<Saveable>().Bind("TestData", this);
         }
@@ -20,20 +21,20 @@ namespace _Project.SaveSystem._Dev
             GetComponent<Saveable>().Unbind("TestData");
         }
 
-        public SaveData GetSaveData()
+        public object GetSaveData()
         {
-            return testSaveData;
+            return testBindableData;
         }
 
-        public void LoadSaveData(SaveData saveData)
+        public void LoadSaveData(object bindableData)
         {
-            if (saveData is not TestSaveData testSaveData)
+            if (bindableData is not TestBindableData testSaveData)
             {
-                Debug.LogError($"Save data is not of type {nameof(TestSaveData)}");
+                Debug.LogError($"Save data is not of type {nameof(TestBindableData)}");
                 return;
             }
             
-            this.testSaveData = testSaveData;
+            this.testBindableData = testSaveData;
         }
     }
 }
