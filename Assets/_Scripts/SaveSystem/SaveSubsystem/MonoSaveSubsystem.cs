@@ -5,6 +5,7 @@ namespace _Project.SaveSystem.Subsystem
 {
     public abstract class MonoSaveSubsystem : MonoBehaviour, ISaveSubsystem
     {
+        // TODO: make this own a non-mono SaveLoader to avoid duplicate code.
         public abstract SerializableGuid GUID { get; }
         
         public abstract object GetSaveData();
