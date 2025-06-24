@@ -22,13 +22,14 @@ namespace ringo.SaveSystem.Managers
             _saveManager = GlobalServiceLocator.Instance.GetService<SaveManager>();
         }
 
+        // TODO: implement override logic.
         public void Save(string fileName, bool overrideSave = false)
         {
-            // TODO: implement override logic.
+            IEnumerable<ISaveSubsystem> sortedSubsystems = SortSubsystemsByPriority();
             
             HeadSaveData data = new HeadSaveData();
             
-            foreach (var subsystem in _saveSubsystems)
+            foreach (var subsystem in sortedSubsystems)
             {
                 data.AddSubContainer(subsystem.GUID, subsystem.GetSaveData());
             }
@@ -38,9 +39,11 @@ namespace ringo.SaveSystem.Managers
         
         public void Load(string fileName)
         {
+            IEnumerable<ISaveSubsystem> sortedSubsystems = SortSubsystemsByPriority();
+            
             HeadSaveData data = _saveManager.LoadGame<HeadSaveData>(fileName);
 
-            foreach (var subsystem in _saveSubsystems)
+            foreach (var subsystem in sortedSubsystems)
             {
                 var subsystemData = data.TryGetSubsystemData(subsystem.GUID, out var subsystemSaveData);
                 if (subsystemData)
@@ -65,6 +68,13 @@ namespace ringo.SaveSystem.Managers
             {
                 Debug.LogWarning($"Save subsystem {saveSubsystem.GetType().Name} not found in registered subsystems.");
             }
+        }
+
+        private IEnumerable<ISaveSubsystem> SortSubsystemsByPriority()
+        {
+            List<ISaveSubsystem> sortedSubsystems = new List<ISaveSubsystem>(_saveSubsystems);
+            sortedSubsystems.Sort((a, b) => a.ExecutionPriority.CompareTo(b.ExecutionPriority));
+            return sortedSubsystems;
         }
     }
 }
