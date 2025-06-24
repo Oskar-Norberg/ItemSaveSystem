@@ -163,7 +163,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db3cf8415846471db9da930b1b15c0e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  executionPriority: 1
+  systemSaveStage: 2
+  systemLoadStage: 2
 --- !u!1 &441143402
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,7 +372,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d20795a275aa46ffbfa68b45c74f5422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  executionPriority: 0
+  systemSaveStage: 0
+  systemLoadStage: 0
 --- !u!4 &1695982397
 Transform:
   m_ObjectHideFlags: 0

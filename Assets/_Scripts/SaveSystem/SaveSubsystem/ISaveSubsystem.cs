@@ -5,7 +5,6 @@ namespace ringo.SaveSystem.Subsystem
 {
     public interface ISaveSubsystem : IGUIDProvider
     {
-        public SaveStage SystemSaveStage { get; }
         public LoadStage SystemLoadStage { get; }
         
         // TODO: Explicitly forward the GUID from IGUIDProvider for clarity.

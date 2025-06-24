@@ -6,10 +6,8 @@ namespace ringo.SaveSystem.Subsystem
 {
     public abstract class MonoSaveSubsystem : MonoBehaviour, ISaveSubsystem
     {
-        public SaveStage SystemSaveStage => systemSaveStage;
         public LoadStage SystemLoadStage => systemLoadStage;
         
-        [SerializeField] private SaveStage systemSaveStage;
         [SerializeField] private LoadStage systemLoadStage;
 
         // TODO: make this own a non-mono SaveLoader to avoid duplicate code.

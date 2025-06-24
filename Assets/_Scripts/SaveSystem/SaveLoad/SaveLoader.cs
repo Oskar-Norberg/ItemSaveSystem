@@ -28,13 +28,9 @@ namespace ringo.SaveSystem.Managers
         {
             HeadSaveData data = new HeadSaveData();
             
-            // Load all stages in order.
-            foreach (LoadStage stage in Enum.GetValues(typeof(LoadStage)))
+            foreach (var subsystem in _saveSubsystems)
             {
-                foreach (var subsystem in GetSubsystemsByStage(stage))
-                {
-                    data.AddSubContainer(subsystem.GUID, subsystem.GetSaveData());
-                }
+                data.AddSubContainer(subsystem.GUID, subsystem.GetSaveData());
             }
 
             _saveManager.SaveGame(fileName, data);
@@ -47,6 +43,8 @@ namespace ringo.SaveSystem.Managers
             // Load all stages in order.
             foreach (LoadStage stage in Enum.GetValues(typeof(LoadStage)))
             {
+                // Get the subsystems each stage.
+                // This ensures if a previous stage altered the coming stage it will be reflected.
                 foreach (var subsystem in GetSubsystemsByStage(stage))
                 {
                     var subsystemData = data.TryGetSubsystemData(subsystem.GUID, out var subsystemSaveData);
@@ -73,17 +71,6 @@ namespace ringo.SaveSystem.Managers
             if (!_saveSubsystems.Remove(saveSubsystem))
             {
                 Debug.LogWarning($"Save subsystem {saveSubsystem.GetType().Name} not found in registered subsystems.");
-            }
-        }
-        
-        private IEnumerable<ISaveSubsystem> GetSubsystemsByStage(SaveStage stage)
-        {
-            foreach (var subsystem in _saveSubsystems)
-            {
-                if (subsystem.SystemSaveStage == stage)
-                {
-                    yield return subsystem;
-                }
             }
         }
         
