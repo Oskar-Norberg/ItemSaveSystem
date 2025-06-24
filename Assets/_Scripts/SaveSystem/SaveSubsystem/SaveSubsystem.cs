@@ -5,8 +5,11 @@ namespace ringo.SaveSystem.Subsystem
 {
     public abstract class SaveSubsystem : ISaveSubsystem
     {
-        public int ExecutionPriority { get; }
+        public SaveStage SystemSaveStage { get; }
+        public LoadStage SystemLoadStage { get; }
+        
         public abstract SerializableGuid GUID { get; }
+
 
         public abstract object GetSaveData();
 

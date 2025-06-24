@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ringo.SaveSystem.DataLoading.Common;
 using ringo.SaveSystem.Subsystem;
@@ -27,9 +28,13 @@ namespace ringo.SaveSystem.Managers
         {
             HeadSaveData data = new HeadSaveData();
             
-            foreach (var subsystem in SortSubsystemsByPriority())
+            // Load all stages in order.
+            foreach (LoadStage stage in Enum.GetValues(typeof(LoadStage)))
             {
-                data.AddSubContainer(subsystem.GUID, subsystem.GetSaveData());
+                foreach (var subsystem in GetSubsystemsByStage(stage))
+                {
+                    data.AddSubContainer(subsystem.GUID, subsystem.GetSaveData());
+                }
             }
 
             _saveManager.SaveGame(fileName, data);
@@ -39,16 +44,21 @@ namespace ringo.SaveSystem.Managers
         {
             HeadSaveData data = _saveManager.LoadGame<HeadSaveData>(fileName);
 
-            foreach (var subsystem in SortSubsystemsByPriority())
+            // Load all stages in order.
+            foreach (LoadStage stage in Enum.GetValues(typeof(LoadStage)))
             {
-                var subsystemData = data.TryGetSubsystemData(subsystem.GUID, out var subsystemSaveData);
-                if (subsystemData)
+                foreach (var subsystem in GetSubsystemsByStage(stage))
                 {
-                    subsystem.Load(subsystemSaveData);
-                }
-                else
-                {
-                    Debug.Log($"No data found for subsystem {subsystem.GetType().Name} in loaded data.");
+                    var subsystemData = data.TryGetSubsystemData(subsystem.GUID, out var subsystemSaveData);
+                
+                    if (subsystemData)
+                    {
+                        subsystem.Load(subsystemSaveData);
+                    }
+                    else
+                    {
+                        Debug.Log($"No data found for subsystem {subsystem.GetType().Name} in loaded data.");
+                    }
                 }
             }
         }
@@ -65,12 +75,27 @@ namespace ringo.SaveSystem.Managers
                 Debug.LogWarning($"Save subsystem {saveSubsystem.GetType().Name} not found in registered subsystems.");
             }
         }
-
-        private IEnumerable<ISaveSubsystem> SortSubsystemsByPriority()
+        
+        private IEnumerable<ISaveSubsystem> GetSubsystemsByStage(SaveStage stage)
         {
-            List<ISaveSubsystem> sortedSubsystems = new List<ISaveSubsystem>(_saveSubsystems);
-            sortedSubsystems.Sort((a, b) => a.ExecutionPriority.CompareTo(b.ExecutionPriority));
-            return sortedSubsystems;
+            foreach (var subsystem in _saveSubsystems)
+            {
+                if (subsystem.SystemSaveStage == stage)
+                {
+                    yield return subsystem;
+                }
+            }
+        }
+        
+        private IEnumerable<ISaveSubsystem> GetSubsystemsByStage(LoadStage stage)
+        {
+            foreach (var subsystem in _saveSubsystems)
+            {
+                if (subsystem.SystemLoadStage == stage)
+                {
+                    yield return subsystem;
+                }
+            }
         }
     }
 }
