@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace ringo.SaveModules.Subsystems.Bindable
 {
+    // TODO: This needs to be renamed to SaveableSubsystem.
     public class SaveableManager : MonoSaveSubsystem, ISaveableManager
     {
         private List<Saveable> _saveables = new();

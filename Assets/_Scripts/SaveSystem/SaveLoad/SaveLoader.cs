@@ -22,14 +22,12 @@ namespace ringo.SaveSystem.Managers
             _saveManager = GlobalServiceLocator.Instance.GetService<SaveManager>();
         }
 
-        // TODO: implement override logic.
+        // TODO: implement save-override/merging logic.
         public void Save(string fileName, bool overrideSave = false)
         {
-            IEnumerable<ISaveSubsystem> sortedSubsystems = SortSubsystemsByPriority();
-            
             HeadSaveData data = new HeadSaveData();
             
-            foreach (var subsystem in sortedSubsystems)
+            foreach (var subsystem in SortSubsystemsByPriority())
             {
                 data.AddSubContainer(subsystem.GUID, subsystem.GetSaveData());
             }
@@ -39,11 +37,9 @@ namespace ringo.SaveSystem.Managers
         
         public void Load(string fileName)
         {
-            IEnumerable<ISaveSubsystem> sortedSubsystems = SortSubsystemsByPriority();
-            
             HeadSaveData data = _saveManager.LoadGame<HeadSaveData>(fileName);
 
-            foreach (var subsystem in sortedSubsystems)
+            foreach (var subsystem in SortSubsystemsByPriority())
             {
                 var subsystemData = data.TryGetSubsystemData(subsystem.GUID, out var subsystemSaveData);
                 if (subsystemData)
