@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ringo.SaveSystem.DataLoading.Common;
 using ringo.SaveSystem.Subsystem;
 using ringo.ServiceLocator;
@@ -15,6 +16,13 @@ namespace ringo.SaveSystem.Managers
 
         private void Awake()
         {
+            // Only allow one instance of SaveLoader.
+            if (GlobalServiceLocator.Instance.TryGetService<ISaveLoader>(out _))
+            {
+                Destroy(this);
+                return;
+            }
+            
             GlobalServiceLocator.Instance.Register<ISaveLoader>(this);
         }
 
@@ -36,7 +44,7 @@ namespace ringo.SaveSystem.Managers
             _saveManager.SaveGame(fileName, data);
         }
         
-        public void Load(string fileName)
+        public async Task Load(string fileName)
         {
             HeadSaveData data = _saveManager.LoadGame<HeadSaveData>(fileName);
 
@@ -51,7 +59,7 @@ namespace ringo.SaveSystem.Managers
                 
                     if (subsystemData)
                     {
-                        subsystem.Load(subsystemSaveData);
+                        await subsystem.Load(subsystemSaveData);
                     }
                     else
                     {
@@ -76,13 +84,24 @@ namespace ringo.SaveSystem.Managers
         
         private IEnumerable<ISaveSubsystem> GetSubsystemsByStage(LoadStage stage)
         {
+            List<ISaveSubsystem> subsystems = new List<ISaveSubsystem>(_saveSubsystems.Count);
             foreach (var subsystem in _saveSubsystems)
             {
                 if (subsystem.SystemLoadStage == stage)
                 {
-                    yield return subsystem;
+                    subsystems.Add(subsystem);
                 }
             }
+
+            return subsystems;
+            
+            // foreach (var subsystem in _saveSubsystems)
+            // {
+            //     if (subsystem.SystemLoadStage == stage)
+            //     {
+            //         yield return subsystem;
+            //     }
+            // }
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using ringo.SaveSystem.Attributes;
 using ringo.SaveSystem.GUID;
 using ringo.SaveSystem.Managers;
@@ -32,7 +33,7 @@ namespace ringo.SaveModules.Subsystems.SceneLoader
             return new SceneLoaderData { SceneGroup = SceneManager.CurrentSceneGroup };
         }
 
-        public override void Load(object saveData)
+        public override async Task Load(object saveData)
         {
             var sceneLoaderData = saveData as SceneLoaderData;
             if (sceneLoaderData == null)
@@ -41,7 +42,10 @@ namespace ringo.SaveModules.Subsystems.SceneLoader
                 return;
             }
 
-            SceneManager.LoadSceneGroup(sceneLoaderData.SceneGroup);
+            await SceneManager.LoadSceneGroup(sceneLoaderData.SceneGroup);
+            
+            // Wait one extra frame to ensure scene is fully loaded and all objects have called Start.
+            await Task.Yield();
         }
     }
     

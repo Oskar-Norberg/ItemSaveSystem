@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ringo.SaveSystem.GUID;
 using ringo.SaveSystem.Managers;
 using ringo.SaveSystem.Subsystem;
@@ -54,7 +55,7 @@ namespace ringo.SaveModules.Subsystems.Bindable
             return new SaveableDataContainer(saveableData);
         }
 
-        public override void Load(object saveData)
+        public override async Task Load(object saveData)
         {
             if (saveData is not SaveableDataContainer saveableDataContainer)
             {
