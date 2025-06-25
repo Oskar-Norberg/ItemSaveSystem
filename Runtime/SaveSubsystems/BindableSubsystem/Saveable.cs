@@ -23,7 +23,7 @@ namespace ringo.SaveModules.Subsystems.Bindable
         
         private MonoSerializableGuid _monoSerializableGuid;
         
-        protected void Start()
+        protected void Awake()
         {
             _monoSerializableGuid = GetComponent<MonoSerializableGuid>();
         }
