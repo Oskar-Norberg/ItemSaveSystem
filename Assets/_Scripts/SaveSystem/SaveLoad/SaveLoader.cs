@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ringo.SaveSystem.DataLoading.Common;
 using ringo.SaveSystem.Subsystem;
@@ -53,7 +54,7 @@ namespace ringo.SaveSystem.Managers
             {
                 // Get the subsystems each stage.
                 // This ensures if a previous stage altered the coming stage it will be reflected.
-                foreach (var subsystem in GetSubsystemsByStage(stage))
+                foreach (var subsystem in GetSubsystemsByStage(stage).ToList())
                 {
                     var subsystemData = data.TryGetSubsystemData(subsystem.GUID, out var subsystemSaveData);
                 
@@ -84,24 +85,13 @@ namespace ringo.SaveSystem.Managers
         
         private IEnumerable<ISaveSubsystem> GetSubsystemsByStage(LoadStage stage)
         {
-            List<ISaveSubsystem> subsystems = new List<ISaveSubsystem>(_saveSubsystems.Count);
             foreach (var subsystem in _saveSubsystems)
             {
                 if (subsystem.SystemLoadStage == stage)
                 {
-                    subsystems.Add(subsystem);
+                    yield return subsystem;
                 }
             }
-
-            return subsystems;
-            
-            // foreach (var subsystem in _saveSubsystems)
-            // {
-            //     if (subsystem.SystemLoadStage == stage)
-            //     {
-            //         yield return subsystem;
-            //     }
-            // }
         }
     }
 }
