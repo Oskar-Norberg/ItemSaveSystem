@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ringo.SaveSystem.DataLoading.Common;
 using ringo.SaveSystem.Subsystem;
 using ringo.ServiceLocator;
@@ -15,6 +17,13 @@ namespace ringo.SaveSystem.Managers
 
         private void Awake()
         {
+            // Only allow one instance of SaveLoader.
+            if (GlobalServiceLocator.Instance.TryGetService<ISaveLoader>(out _))
+            {
+                Destroy(this);
+                return;
+            }
+            
             GlobalServiceLocator.Instance.Register<ISaveLoader>(this);
         }
 
@@ -36,7 +45,7 @@ namespace ringo.SaveSystem.Managers
             _saveManager.SaveGame(fileName, data);
         }
         
-        public void Load(string fileName)
+        public async Task Load(string fileName)
         {
             HeadSaveData data = _saveManager.LoadGame<HeadSaveData>(fileName);
 
@@ -45,13 +54,13 @@ namespace ringo.SaveSystem.Managers
             {
                 // Get the subsystems each stage.
                 // This ensures if a previous stage altered the coming stage it will be reflected.
-                foreach (var subsystem in GetSubsystemsByStage(stage))
+                foreach (var subsystem in GetSubsystemsByStage(stage).ToList())
                 {
                     var subsystemData = data.TryGetSubsystemData(subsystem.GUID, out var subsystemSaveData);
                 
                     if (subsystemData)
                     {
-                        subsystem.Load(subsystemSaveData);
+                        await subsystem.Load(subsystemSaveData);
                     }
                     else
                     {

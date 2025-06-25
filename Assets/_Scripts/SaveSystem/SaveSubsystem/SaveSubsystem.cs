@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using ringo.SaveSystem.GUID;
 using ringo.SaveSystem.Managers;
 
@@ -12,7 +13,7 @@ namespace ringo.SaveSystem.Subsystem
 
         public abstract object GetSaveData();
 
-        public abstract void Load(object saveData);
+        public abstract Task Load(object saveData);
 
         void ISaveSubsystem.Register(ISaveLoader saveManager)
         {

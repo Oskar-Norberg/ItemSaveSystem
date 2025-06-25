@@ -15,7 +15,7 @@
         "com.unity.settings-manager": "2.0.1",
         "com.unity.nuget.newtonsoft-json": "3.0.2"
       },
-      "hash": "4a35d05a25222f9d879c55a5fba74f5f8ab3bf7f"
+      "hash": "4b07d32063e45e0cff8b239007c0897364229b36"
     },
     "com.ringo.service-locator": {
       "version": "https://github.com/Oskar-Norberg/Unity-ServiceLocator.git",
