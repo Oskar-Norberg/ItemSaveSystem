@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ringo.SaveSystem.GUID;
 using ringo.SaveSystem.Managers;
 using ringo.SaveSystem.Subsystem;
@@ -8,6 +9,7 @@ using UnityEngine;
 
 namespace ringo.SaveModules.Subsystems.Bindable
 {
+    // TODO: This needs to be renamed to SaveableSubsystem.
     public class SaveableManager : MonoSaveSubsystem, ISaveableManager
     {
         private List<Saveable> _saveables = new();
@@ -53,12 +55,12 @@ namespace ringo.SaveModules.Subsystems.Bindable
             return new SaveableDataContainer(saveableData);
         }
 
-        public override void Load(object saveData)
+        public override Task Load(object saveData)
         {
             if (saveData is not SaveableDataContainer saveableDataContainer)
             {
                 Debug.LogError("Invalid save data type. Expected SaveableDataContainer.");
-                return;
+                return Task.CompletedTask;
             }
             
             foreach (var saveable in _saveables)
@@ -72,6 +74,8 @@ namespace ringo.SaveModules.Subsystems.Bindable
                     Debug.LogWarning($"No data found for saveable {saveable.GUIDString} in loaded data.");
                 }
             }
+
+            return Task.CompletedTask;
         }
     }
 

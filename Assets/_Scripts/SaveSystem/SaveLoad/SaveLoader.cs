@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ringo.SaveSystem.DataLoading.Common;
 using ringo.SaveSystem.Subsystem;
 using ringo.ServiceLocator;
@@ -14,6 +17,13 @@ namespace ringo.SaveSystem.Managers
 
         private void Awake()
         {
+            // Only allow one instance of SaveLoader.
+            if (GlobalServiceLocator.Instance.TryGetService<ISaveLoader>(out _))
+            {
+                Destroy(this);
+                return;
+            }
+            
             GlobalServiceLocator.Instance.Register<ISaveLoader>(this);
         }
 
@@ -22,10 +32,9 @@ namespace ringo.SaveSystem.Managers
             _saveManager = GlobalServiceLocator.Instance.GetService<SaveManager>();
         }
 
+        // TODO: implement save-override/merging logic.
         public void Save(string fileName, bool overrideSave = false)
         {
-            // TODO: implement override logic.
-            
             HeadSaveData data = new HeadSaveData();
             
             foreach (var subsystem in _saveSubsystems)
@@ -36,20 +45,27 @@ namespace ringo.SaveSystem.Managers
             _saveManager.SaveGame(fileName, data);
         }
         
-        public void Load(string fileName)
+        public async Task Load(string fileName)
         {
             HeadSaveData data = _saveManager.LoadGame<HeadSaveData>(fileName);
 
-            foreach (var subsystem in _saveSubsystems)
+            // Load all stages in order.
+            foreach (LoadStage stage in Enum.GetValues(typeof(LoadStage)))
             {
-                var subsystemData = data.TryGetSubsystemData(subsystem.GUID, out var subsystemSaveData);
-                if (subsystemData)
+                // Get the subsystems each stage.
+                // This ensures if a previous stage altered the coming stage it will be reflected.
+                foreach (var subsystem in GetSubsystemsByStage(stage).ToList())
                 {
-                    subsystem.Load(subsystemSaveData);
-                }
-                else
-                {
-                    Debug.Log($"No data found for subsystem {subsystem.GetType().Name} in loaded data.");
+                    var subsystemData = data.TryGetSubsystemData(subsystem.GUID, out var subsystemSaveData);
+                
+                    if (subsystemData)
+                    {
+                        await subsystem.Load(subsystemSaveData);
+                    }
+                    else
+                    {
+                        Debug.Log($"No data found for subsystem {subsystem.GetType().Name} in loaded data.");
+                    }
                 }
             }
         }
@@ -64,6 +80,17 @@ namespace ringo.SaveSystem.Managers
             if (!_saveSubsystems.Remove(saveSubsystem))
             {
                 Debug.LogWarning($"Save subsystem {saveSubsystem.GetType().Name} not found in registered subsystems.");
+            }
+        }
+        
+        private IEnumerable<ISaveSubsystem> GetSubsystemsByStage(LoadStage stage)
+        {
+            foreach (var subsystem in _saveSubsystems)
+            {
+                if (subsystem.SystemLoadStage == stage)
+                {
+                    yield return subsystem;
+                }
             }
         }
     }
