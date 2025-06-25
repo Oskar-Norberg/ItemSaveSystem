@@ -18,6 +18,14 @@
     "com.unity.nuget.newtonsoft-json": "3.0.2"
   },
 
+    "samples": [
+    {
+      "displayName": "Singleton Versions of Bindables, SaveLoader and Saveables",
+      "description": "Made for quick setup of save system. Personally, I would recommend not using this and instead using something like a ServiceLocator. But this can be used as a base.",
+      "path": "Samples~/Singletons"
+    }
+  ],
+
   
   "author": {
     "name": "Oskar Norberg",
