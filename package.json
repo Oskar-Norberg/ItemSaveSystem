@@ -23,6 +23,11 @@
       "displayName": "Singleton Versions of Bindables, SaveLoader and Saveables",
       "description": "Made for quick setup of save system. Personally, I would recommend not using this and instead using something like a ServiceLocator. But this can be used as a base.",
       "path": "Samples~/Singletons"
+    },
+    {
+      "displayName": "SceneLoaderSubsystem (and Singleton)",
+      "description": "Quick prototype I made of a SaveSubsystem that saves the current scene and loads it. Makes use of my SceneManager and does not import it automatically, will break things!",
+      "path": "Samples~/SceneLoaderSubsystem"
     }
   ],
 
