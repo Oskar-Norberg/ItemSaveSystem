@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ringo.SaveSystem.GUID;
-using ringo.ServiceLocator;
 using UnityEngine;
 
 namespace ringo.SaveModules.Subsystems.Bindable
 {
+    /// <summary>
+    /// Saveable component that can be bound to other components for saving and loading.
+    /// Will not bind to a manager automatically.
+    /// Make a derived class if you want to bind to a specific manager or make use of the included SingletonSaveable and SingleonSaveableManager.
+    /// </summary>
     [Serializable]
     [RequireComponent(typeof(MonoSerializableGuid))]
     public class Saveable : MonoBehaviour, IGUIDProvider
@@ -19,19 +23,9 @@ namespace ringo.SaveModules.Subsystems.Bindable
         
         private MonoSerializableGuid _monoSerializableGuid;
         
-        private void Start()
+        protected void Start()
         {
             _monoSerializableGuid = GetComponent<MonoSerializableGuid>();
-            
-            // TODO: Possible error if SaveableManager is swapped at runtime.
-            GlobalServiceLocator.Instance.GetService<ISaveableManager>().BindSaveable(this);
-            
-            PostStartErrorChecking();
-        }
-
-        private void OnDestroy()
-        {
-            GlobalServiceLocator.Instance.GetService<ISaveableManager>().UnbindSaveable(this);
         }
 
         public void Bind(string bindName, IBindable bindable)

@@ -4,11 +4,15 @@ using System.Threading.Tasks;
 using ringo.SaveSystem.GUID;
 using ringo.SaveSystem.Managers;
 using ringo.SaveSystem.Subsystem;
-using ringo.ServiceLocator;
 using UnityEngine;
 
 namespace ringo.SaveModules.Subsystems.Bindable
 {
+    /// <summary>
+    /// Manager class for Saveable components. Communicates with the SaveLoader to save and load data for all registered Saveables.
+    /// Will not automatically bind to Saveables; user must call BindSaveable to this manager.
+    /// See also SingletonSaveableManager for a singleton version of this.
+    /// </summary>
     // TODO: This needs to be renamed to SaveableSubsystem.
     public class SaveableManager : MonoSaveSubsystem, ISaveableManager
     {
@@ -18,17 +22,6 @@ namespace ringo.SaveModules.Subsystems.Bindable
         public override SerializableGuid GUID => _guid;
         // TODO: Make this a serialize field so it can be set in the inspector.
         private SerializableGuid _guid = new("SaveableManager");
-
-        private void Awake()
-        {
-            GlobalServiceLocator.Instance.Register<ISaveableManager>(this);
-        }
-        
-        private void Start()
-        {
-            _saveLoader = GlobalServiceLocator.Instance.GetService<ISaveLoader>();
-            _saveLoader.RegisterSaveSubsystem(this);
-        }
 
         public void BindSaveable(Saveable saveable)
         {

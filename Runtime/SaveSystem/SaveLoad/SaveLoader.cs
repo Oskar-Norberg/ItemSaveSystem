@@ -3,33 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ringo.SaveSystem.DataLoading.Common;
+using ringo.SaveSystem.DataLoading.Serialization;
+using ringo.SaveSystem.DataLoading.Serialization.Binary;
+using ringo.SaveSystem.DataLoading.Serialization.JSON;
+using ringo.SaveSystem.Services;
 using ringo.SaveSystem.Subsystem;
-using ringo.ServiceLocator;
 using UnityEngine;
 
 namespace ringo.SaveSystem.Managers
 {
     public class SaveLoader : MonoBehaviour, ISaveLoader
     {
+        [SerializeField] private SerializationTypes serializationType = SerializationTypes.JSON;
+        
         private readonly HashSet<ISaveSubsystem> _saveSubsystems = new();
         
         private SaveManager _saveManager;
 
-        private void Awake()
+        protected void Awake()
         {
-            // Only allow one instance of SaveLoader.
-            if (GlobalServiceLocator.Instance.TryGetService<ISaveLoader>(out _))
+            ISerializer serializer = null;
+            
+            switch (serializationType)
             {
-                Destroy(this);
-                return;
+                case SerializationTypes.Binary:
+                    serializer = new BinarySerializer();
+                    break;
+                // Fallback to JSON if no valid type.
+                case SerializationTypes.JSON:
+                    serializer = new JSONSerializer();
+                    break;
+                default:
+                    Debug.LogError("Unknown serialization type: " + serializationType);
+                    // Tremendously cursed
+                    goto case SerializationTypes.JSON;
             }
             
-            GlobalServiceLocator.Instance.Register<ISaveLoader>(this);
-        }
-
-        private void Start()
-        {
-            _saveManager = GlobalServiceLocator.Instance.GetService<SaveManager>();
+            SaveFileService saveFileService = new SaveFileService(serializer);
+            _saveManager = new SaveManager(saveFileService);
         }
 
         // TODO: implement save-override/merging logic.

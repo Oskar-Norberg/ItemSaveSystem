@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace ringo.SaveSystem.Services
 {
+    // TODO: Make ISaveFileService interface.
     public class SaveFileService
     {
         private readonly ISerializer _serializer;
