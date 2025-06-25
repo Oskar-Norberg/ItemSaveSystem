@@ -4,6 +4,7 @@ using ringo.SaveSystem.Attributes;
 using ringo.SaveSystem.GUID;
 using ringo.SaveSystem.Managers;
 using ringo.SaveSystem.Subsystem;
+using ringo.SceneSystem;
 using UnityEngine;
 
 namespace ringo.SaveModules.Subsystems.SceneLoader
@@ -14,12 +15,6 @@ namespace ringo.SaveModules.Subsystems.SceneLoader
         private SerializableGuid _guid = new("SceneLoaderSubsystem");
         
         private ISaveLoader _saveLoader;
-
-        private void Start()
-        {
-            _saveLoader = GlobalServiceLocator.Instance.GetService<ISaveLoader>();
-            _saveLoader.RegisterSaveSubsystem(this);
-        }
 
         private void OnDestroy()
         {
