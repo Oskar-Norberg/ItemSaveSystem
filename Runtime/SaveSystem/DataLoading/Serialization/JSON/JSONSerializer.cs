@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
@@ -27,12 +28,16 @@ namespace ringo.SaveSystem.DataLoading.Serialization.JSON
             JsonSerializer jsonSerializer = CreateJSONSerializer();
             StringReader stringReader = CreateStringReader(serializedObject);
             JsonReader reader = CreateJSONReader(stringReader);
-            
+
             try
             {
                 T deserializedObject = jsonSerializer.Deserialize<T>(reader);
-                
+
                 return deserializedObject;
+            }
+            catch (ArgumentNullException e)
+            {
+                throw new InvalidDataException("Serialized data is null.", e);
             }
             catch (JsonSerializationException e)
             {
@@ -41,6 +46,10 @@ namespace ringo.SaveSystem.DataLoading.Serialization.JSON
             catch (JsonReaderException e)
             {
                 throw new InvalidDataException("Invalid data format.", e);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidDataException("An unexpected error occurred during deserialization.", e);
             }
             finally
             {
