@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using ringo.SaveSystem.DataLoading.Serialization;
 using ringo.SaveSystem.Exceptions;
@@ -31,8 +32,8 @@ namespace ringo.SaveSystem.Services
             }
             
             string serializedData = File.ReadAllText(GetPathString(fileName));
-            
-            try 
+
+            try
             {
                 T saveData = _serializer.Deserialize<T>(serializedData);
 
@@ -41,6 +42,10 @@ namespace ringo.SaveSystem.Services
             catch (InvalidDataException)
             {
                 throw new InvalidSaveException($"Save file {fileName} is invalid.");
+            }
+            catch (Exception e)
+            {
+                throw new InvalidDataException("An error occurred while loading the save file.", e);
             }
         }
         

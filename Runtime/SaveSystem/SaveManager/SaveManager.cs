@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using ringo.SaveSystem.Exceptions;
 using ringo.SaveSystem.Services;
 using UnityEngine;
 
@@ -12,16 +15,22 @@ namespace ringo.SaveSystem.Managers
             _saveFileService = saveFileService;
         }
 
+        // TODO: This desperately needs to be a TryLoad function.
         public T LoadGame<T>(string fileName)
         {
-            T loadedData = _saveFileService.LoadFromFile<T>(fileName);
-            
-            if (loadedData == null)
+            try
             {
-                Debug.LogWarning($"Save file {fileName} does not exist.");
+                T loadedData = _saveFileService.LoadFromFile<T>(fileName);
+
+                return loadedData;
+            }
+            catch (Exception ex) when (ex is InvalidDataException or InvalidSaveException )
+            {
+                Debug.LogException(ex);
+                System.Diagnostics.Debugger.Break();
             }
             
-            return loadedData;
+            return default;
         }
 
         public void SaveGame<T>(string fileName, T saveData)
