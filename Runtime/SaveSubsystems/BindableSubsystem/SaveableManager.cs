@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ringo.SaveSystem.DataLoading.Common.Merging;
 using ringo.SaveSystem.GUID;
 using ringo.SaveSystem.Managers;
 using ringo.SaveSystem.Subsystem;
@@ -68,13 +69,30 @@ namespace ringo.SaveModules.Subsystems.Bindable
 
     [Serializable]
     [SaveSystem.Attributes.SaveData("SaveableData")]
-    public struct SaveableDataContainer
+    public struct SaveableDataContainer : IMergeable
     {
         public Dictionary<SerializableGuid, Dictionary<string, object>> _saveableData;
         
         public SaveableDataContainer(Dictionary<SerializableGuid, Dictionary<string, object>> saveableData)
         {
             _saveableData = saveableData;
+        }
+
+        public void Merge(object data)
+        {
+            if (data is not SaveableDataContainer other)
+            {
+                throw new ArgumentException("Cannot merge with non-SaveableDataContainer type.");
+            }
+
+            // Merge previous saveable data ignoring duplicates.
+            foreach (var kvp in other._saveableData)
+            {
+                if (_saveableData.ContainsKey(kvp.Key))
+                    continue;
+                
+                _saveableData[kvp.Key] = kvp.Value;
+            }
         }
     }
 }
