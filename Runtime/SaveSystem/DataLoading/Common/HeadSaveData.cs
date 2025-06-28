@@ -4,6 +4,7 @@ using ringo.SaveSystem.GUID;
 
 namespace ringo.SaveSystem.DataLoading.Common
 {
+    // TODO: Because this is really just a dictionary container. It would be nice to be able to iterate over it.
     [Serializable]
     public class HeadSaveData : ILoadedData
     {
