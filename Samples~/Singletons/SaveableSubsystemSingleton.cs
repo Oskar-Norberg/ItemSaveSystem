@@ -3,17 +3,17 @@ using UnityEngine;
 
 namespace ringo.SaveSystem.Singleton
 {
-    public class SaveableManagerSingleton : SaveableManager
+    public class SaveableSubsystemSingleton : SaveableSubsystem
     {
-        public static SaveableManagerSingleton Instance => _instance;
-        private static SaveableManagerSingleton _instance;
+        public static SaveableSubsystemSingleton Instance => _instance;
+        private static SaveableSubsystemSingleton _instance;
 
         private void Awake()
         {
             if (_instance)
             {
                 Destroy(gameObject);
-                Debug.LogWarning("Duplicate SaveableManagerSingleton found");
+                Debug.LogWarning("Duplicate SaveableSubsystemSingleton found");
                 return;
             }
             

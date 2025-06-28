@@ -6,12 +6,12 @@ namespace ringo.SaveSystem.Singleton
     {
         private void Start()
         {
-            SaveableManagerSingleton.Instance.BindSaveable(this);
+            SaveableSubsystemSingleton.Instance.BindSaveable(this);
         }
 
         private void OnDestroy()
         {
-            var saveableManager = SaveableManagerSingleton.Instance;
+            var saveableManager = SaveableSubsystemSingleton.Instance;
             
             if (saveableManager)
                 saveableManager.UnbindSaveable(this);

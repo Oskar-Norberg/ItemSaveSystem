@@ -10,19 +10,19 @@ using UnityEngine;
 namespace ringo.SaveModules.Subsystems.Bindable
 {
     /// <summary>
-    /// Manager class for Saveable components. Communicates with the SaveLoader to save and load data for all registered Saveables.
+    /// Subsystem class for Saveable components. Communicates with the SaveLoader to save and load data for all registered Saveables.
     /// Will not automatically bind to Saveables; user must call BindSaveable to this manager.
-    /// See also SingletonSaveableManager for a singleton version of this.
+    /// See also SingletonSaveableSubsystem for a singleton version of this.
     /// </summary>
     // TODO: This needs to be renamed to SaveableSubsystem.
-    public class SaveableManager : MonoSaveSubsystem<SaveableDataContainer>, ISaveableManager
+    public class SaveableSubsystem : MonoSaveSubsystem<SaveableDataContainer>, ISaveableSubsystem
     {
         private List<Saveable> _saveables = new();
         private ISaveLoader _saveLoader;
 
         public override SerializableGuid GUID => _guid;
         // TODO: Make this a serialize field so it can be set in the inspector.
-        private SerializableGuid _guid = new("SaveableManager");
+        private SerializableGuid _guid = new("SaveableSubsystem");
 
         public void BindSaveable(Saveable saveable)
         {

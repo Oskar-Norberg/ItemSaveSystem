@@ -9,7 +9,7 @@ namespace ringo.SaveModules.Subsystems.Bindable
     /// <summary>
     /// Saveable component that can be bound to other components for saving and loading.
     /// Will not bind to a manager automatically.
-    /// Make a derived class if you want to bind to a specific manager or make use of the included SingletonSaveable and SingleonSaveableManager.
+    /// Make a derived class if you want to bind to a specific manager or make use of the included SingletonSaveable and SingletonSaveableSubsystem.
     /// </summary>
     [Serializable]
     [RequireComponent(typeof(MonoSerializableGuid))]
