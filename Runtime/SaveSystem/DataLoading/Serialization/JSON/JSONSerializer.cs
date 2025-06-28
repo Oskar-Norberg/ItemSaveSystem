@@ -65,7 +65,7 @@ namespace ringo.SaveSystem.DataLoading.Serialization.JSON
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 Converters = new List<JsonConverter>{ new SerializableGuidConverter(), new SerializableGuidDictionaryConverter() },
-                SerializationBinder = new JSONSaveDataBinder()
+                // SerializationBinder = new JSONSaveDataBinder()
             };
             
             var jsonSerializer = JsonSerializer.Create(settings);
