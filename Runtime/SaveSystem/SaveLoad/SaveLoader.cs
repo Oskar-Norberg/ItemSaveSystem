@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ringo.SaveSystem.DataLoading.Common;
+using ringo.SaveSystem.DataLoading.Common.Merging;
 using ringo.SaveSystem.DataLoading.Serialization;
 using ringo.SaveSystem.DataLoading.Serialization.Binary;
 using ringo.SaveSystem.DataLoading.Serialization.JSON;
@@ -46,14 +47,28 @@ namespace ringo.SaveSystem.Managers
         // TODO: implement save-override/merging logic.
         public void Save(string fileName, bool overrideSave = false)
         {
-            HeadSaveData data = new HeadSaveData();
-            
-            foreach (var subsystem in _saveSubsystems)
+            HeadSaveData newSaveData = GetNewSaveData();
+
+            // Do not override save / merge data. Consider moving to a separate method. Maybe even a MergeOrchestrator class.
+            if (!overrideSave)
             {
-                data.AddSubContainer(subsystem.GUID, subsystem.GetSaveData());
+                HeadSaveData existingData = _saveManager.LoadGame<HeadSaveData>(fileName);
+                
+                if (existingData != null)
+                {
+                    foreach (var subData in newSaveData._saveDatas)
+                    {
+                        var data = existingData.TryGetSubsystemData(subData.Key, out var existingSubData);
+                        if (data)
+                        {
+                            // If data exists, merge it.
+                            DataMerger.TryMergeData(subData.Value, existingSubData);
+                        }
+                    }
+                }
             }
 
-            _saveManager.SaveGame(fileName, data);
+            _saveManager.SaveGame(fileName, newSaveData);
         }
         
         public async Task Load(string fileName)
@@ -92,6 +107,18 @@ namespace ringo.SaveSystem.Managers
             {
                 Debug.LogWarning($"Save subsystem {saveSubsystem.GetType().Name} not found in registered subsystems.");
             }
+        }
+
+        private HeadSaveData GetNewSaveData()
+        {
+            var data = new HeadSaveData();
+            
+            foreach (var subsystem in _saveSubsystems)
+            {
+                data.AddSubContainer(subsystem.GUID, subsystem.GetSaveData());
+            }
+
+            return data;
         }
         
         private IEnumerable<ISaveSubsystem> GetSubsystemsByStage(LoadStage stage)
