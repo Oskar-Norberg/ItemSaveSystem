@@ -20,6 +20,7 @@ namespace ringo.SaveSystem.Managers
         private readonly HashSet<ISaveSubsystem> _saveSubsystems = new();
         
         private SaveManager _saveManager;
+        private ISaveMerger _saveMerger;
 
         protected void Awake()
         {
@@ -42,30 +43,21 @@ namespace ringo.SaveSystem.Managers
             
             SaveFileService saveFileService = new SaveFileService(serializer);
             _saveManager = new SaveManager(saveFileService);
+            
+            _saveMerger = new SaveMerger(new DataMerger());
         }
 
         // TODO: implement save-override/merging logic.
+        // TODO: Rename the overrideSave to mergeSave or similar. Override sounds like it will just ignore the existing slot.
         public void Save(string fileName, bool overrideSave = false)
         {
             HeadSaveData newSaveData = GetNewSaveData();
 
-            // Do not override save / merge data. Consider moving to a separate method. Maybe even a MergeOrchestrator class.
             if (!overrideSave)
             {
                 HeadSaveData existingData = _saveManager.LoadGame<HeadSaveData>(fileName);
                 
-                if (existingData != null)
-                {
-                    foreach (var subData in newSaveData._saveDatas)
-                    {
-                        var data = existingData.TryGetSubsystemData(subData.Key, out var existingSubData);
-                        if (data)
-                        {
-                            // If data exists, merge it.
-                            DataMerger.TryMergeData(subData.Value, existingSubData);
-                        }
-                    }
-                }
+                _saveMerger.TryMergeSaves(newSaveData, existingData);
             }
 
             _saveManager.SaveGame(fileName, newSaveData);
