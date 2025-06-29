@@ -27,6 +27,7 @@ namespace ringo.SaveSystem.Managers
             catch (Exception ex) when (ex is InvalidDataException or InvalidSaveException )
             {
                 Debug.LogException(ex);
+                // This is annoying as hell, I can't mute this.
                 System.Diagnostics.Debugger.Break();
             }
             
