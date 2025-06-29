@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using ringo.SaveSystem.DataLoading.Serialization.JSON.UnityConverters;
 
 namespace ringo.SaveSystem.DataLoading.Serialization.JSON
 {
@@ -64,7 +65,7 @@ namespace ringo.SaveSystem.DataLoading.Serialization.JSON
             {
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
-                Converters = new List<JsonConverter>{ new SerializableGuidConverter(), new SerializableGuidDictionaryConverter() },
+                Converters = GetJsonConverters(),
                 // SerializationBinder = new JSONSaveDataBinder()
             };
             
@@ -96,6 +97,20 @@ namespace ringo.SaveSystem.DataLoading.Serialization.JSON
         private StringReader CreateStringReader(string serializedString)
         {
             return new StringReader(serializedString);
+        }
+        
+        private IList<JsonConverter> GetJsonConverters()
+        {
+            var converters = new List<JsonConverter>
+            {
+                // SaveManager Specific types
+                new SerializableGuidConverter(),
+                new SerializableGuidDictionaryConverter(),
+                
+                // Unity Specific Types
+                new Vector3Converter(),
+            };
+            return converters;
         }
     }
 }
