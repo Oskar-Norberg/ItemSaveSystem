@@ -14,5 +14,12 @@ namespace ringo.SaveSystem.DataLoading.Serialization.Common
             Rotation = rotation;
             Scale = scale;
         }
+
+        public void ApplyTo(Transform transform)
+        {
+            transform.position = Position;
+            transform.rotation = Rotation;
+            transform.localScale = Scale;
+        }
     }
 }
