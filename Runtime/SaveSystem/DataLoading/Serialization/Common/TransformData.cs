@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace ringo.SaveSystem.DataLoading.Serialization.Common
 {
+    [Serializable]
     public struct TransformData
     {
         public Vector3 Position;
