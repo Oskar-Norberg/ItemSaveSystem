@@ -108,6 +108,7 @@ namespace ringo.SaveSystem.DataLoading.Serialization.JSON
                 new SerializableGuidDictionaryConverter(),
                 
                 // Unity Specific Types
+                new Vector2Converter(),
                 new Vector3Converter(),
                 new QuaternionConverter(),
             };
